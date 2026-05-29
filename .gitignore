@@ -3,3 +3,6 @@
 
 # Jupyter notebook checkpoints
 .ipynb_checkpoints/
+
+# Editor settings
+ieee39/.vscode/settings.json
