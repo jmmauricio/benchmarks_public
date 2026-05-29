@@ -31,11 +31,11 @@ ieee39/cases/base/
     README.md
 ```
 
-### NTS (Nordic Test System)
+### NTS (REE España)
 
 Located in `nts/`.
 
-- **5-bus equivalent** of the Nordic system with two synchronous generators.
+- **5-bus equivalent** of the REE España system with two synchronous generators.
 - Reference step-response curve from the NTS REE document.
 - **`ini()`** — load-flow report, validation, small-signal analysis including
   inter-area mode identification (0.1–0.5 Hz band).
