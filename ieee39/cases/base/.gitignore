@@ -4,4 +4,5 @@
 !.gitignore
 !*.hjson
 !main.py
+!*.ipynb
 !README.md
