@@ -22,24 +22,38 @@ and a SEXS AVR — the canonical hydro stack.
 
 ```bash
 PYTHONPATH=/path/to/pydae/packages/pydae-uds/src \
-  python main.py
+  python main.py         # gate-opening step  (0.80 → 0.95 → 0.80)
+PYTHONPATH=/path/to/pydae/packages/pydae-uds/src \
+  python load_trip.py    # load trip          (0.80 → 0.20)
 ```
 
-Generates `hydro_smib_step.png` (4-panel: power, frequency, gate/flow,
-terminal voltage) showing the response to a load-reference step
-$p_{c,lc} = 0.80 \to 0.95 \to 0.80$ pu.
+`main.py` generates `hydro_smib_step.png` — load-reference step
+$p_{c,lc} = 0.80 \to 0.95 \to 0.80$ pu, exercising the
+**gate-opening** inverse response.
+
+`load_trip.py` generates `hydro_smib_load_trip.png` — a sudden
+load-trip step $p_{c,lc} = 0.80 \to 0.20$ pu at $t = 5$ s, exercising
+the **gate-closing** inverse response (output briefly rises while the
+water column keeps flowing through the partly-closed gate).
 
 ## Expected behaviour
 
-- **Non-minimum-phase response.** When the gate opens, the water
-  column has inertia and the immediate effect is a *reduction* in
-  turbine power before the flow accelerates and power climbs to the
-  new setpoint. This is the canonical "inverse response" of a
-  Francis-style hydro turbine — `p_m` and `p_g` dip below their
-  pre-step value for the first few seconds of the gate move.
-- **Slow recovery.** The transient-droop dashpot ($R_r$, $T_r$)
-  rolls off over ~5 s; the LC integrator ($K_i = 0.01$, $\tau \approx
-  100$ s) eventually pins $p_g$ to the setpoint as the dispatch
-  catches up.
+- **Gate-opening inverse response (`main.py`).** When the gate opens,
+  the water column has inertia and the immediate effect is a
+  *reduction* in turbine power before the flow accelerates and power
+  climbs to the new setpoint. `p_g` dips below the pre-step value for
+  the first few seconds of the gate move.
+- **Gate-closing inverse response (`load_trip.py`).** Symmetrically,
+  when the gate closes (a sudden drop in dispatch — load was shed or
+  another unit picked up demand), the water that was already in motion
+  has nowhere to go and momentarily *raises* the turbine output before
+  the column decelerates and power falls to the new setpoint. The
+  observed peak is ≈ 210 MW (0.84 pu, ~5 % above the pre-trip 200 MW)
+  at $t \approx 17$ s with $T_w = 1$ s; with a longer penstock the
+  overshoot would be larger.
+- **Slow recovery in both cases.** The transient-droop dashpot
+  ($R_r$, $T_r$) rolls off over ~5 s; the LC integrator
+  ($K_i = 0.01$, $\tau \approx 100$ s) eventually pins $p_g$ to the
+  setpoint as the dispatch catches up.
 - **Tight voltage regulation.** SEXS with $K_a = 100$ keeps $V_1$
-  near 1.0 pu through both steps.
+  near 1.0 pu through both scenarios.

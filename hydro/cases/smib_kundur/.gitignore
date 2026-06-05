@@ -3,6 +3,7 @@
 !.gitignore
 !*.hjson
 !main.py
+!*.py
 !README.md
 !*.md
 !*.png
