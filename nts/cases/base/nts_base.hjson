@@ -224,7 +224,8 @@ results: {
   //   in the figure; intermediate values are visual interpolation along
   //   the marked locus and carry ~1 pp damping uncertainty.
   eigenvalues_XL_sweep_nts_fig18: [
-    {X_L: 0.01, real: -2.00, imag: 6.30, freq_Hz: 1.003, zeta: 0.303, source: "labelled"},
+    // Labelled endpoints digitised with WebPlotDigitizer.
+    {X_L: 0.01, real: -1.9808173477898245, imag: 6.2876190476190486, freq_Hz: 1.0007, zeta: 0.3005, source: "webplotdigitizer"},
     {X_L: 0.05, real: -1.17, imag: 4.59, freq_Hz: 0.731, zeta: 0.247, source: "interp"},
     {X_L: 0.10, real: -0.87, imag: 3.48, freq_Hz: 0.554, zeta: 0.242, source: "interp"},
     {X_L: 0.15, real: -0.67, imag: 2.83, freq_Hz: 0.450, zeta: 0.230, source: "interp"},
@@ -234,7 +235,7 @@ results: {
     {X_L: 0.35, real: -0.28, imag: 1.85, freq_Hz: 0.294, zeta: 0.150, source: "interp"},
     {X_L: 0.40, real: -0.24, imag: 1.72, freq_Hz: 0.274, zeta: 0.138, source: "interp"},
     {X_L: 0.50, real: -0.21, imag: 1.51, freq_Hz: 0.240, zeta: 0.138, source: "interp"},
-    {X_L: 0.60, real: -0.18, imag: 1.32, freq_Hz: 0.210, zeta: 0.135, source: "labelled"}
+    {X_L: 0.60, real: -0.14804003336113425, imag: 1.2234920634920634, freq_Hz: 0.1947, zeta: 0.1201, source: "webplotdigitizer"}
   ]
 }
 }
@@ -242,3 +243,7 @@ results: {
 // mode:
 // X = 0.6:  -0.1831687866506293, 1.280651415056651
 // X = 0.01: -1.6395172182486633, 5.654761242888386
+
+// NTS base with webplotdigitzer
+// X = 0.6:  -0.14804003336113425, 1.2234920634920634
+// X = 0.01: -1.9808173477898245, 6.2876190476190486
