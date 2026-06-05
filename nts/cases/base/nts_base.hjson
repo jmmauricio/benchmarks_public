@@ -26,13 +26,15 @@ loads: [
 
 syns: [
 
-  // ── Generator at bus 1 (1500 MVA, 6th-order) ─────────────────────────
-  {bus: "1", S_n: 1500e6, type: "milano4ord",
+  // ── Generator at bus 1 (1500 MVA, IEEE 1110 Model 2.2 / GENROU) ──────
+  // Parameters taken literally from NTS Tabla 45 (Iberdrola unit).
+  // No X_l field: genrou's X2d/X2q are terminal-referred (IEEE 115 Eq. 88).
+  {bus: "1", S_n: 1500e6, type: "genrou",
    X_d: 2.135, X1d: 0.34,  T1d0: 6.47,
    X_q: 2.046, X1q: 0.573, T1q0: 0.61,
    X2d: 0.269, T2d0: 0.022,
    X2q: 0.269, T2q0: 0.034,
-   R_a: 0.0, X_l: 0.0,   //  In NTS: X_l: 0.234, however in pydae it looks to work better  X_l: 0.0
+   R_a: 0.0,
    S_10: 0.1275, S_12: 0.2706,
    H: 6.3, D: 0.0,
    F_n: 50.0, omega_s: 1.0, K_sec: 0.0, K_delta: 0.0,
@@ -64,13 +66,14 @@ syns: [
 
    lc: {K_i: 0.0001, p_c_lc: 0.9}},
 
-  // ── Generator at bus 4 (5000 MVA, 6th-order, ieeeg1 + sst1 + lc) ────
-  {bus: "4", S_n: 5000e6, type: "milano4ord",
+  // ── Generator at bus 4 (5000 MVA, IEEE 1110 Model 2.2 / GENROU) ─────
+  // ieeeg1 governor + st1 AVR + AGC participation.
+  {bus: "4", S_n: 5000e6, type: "genrou",
    X_d: 1.8,  X1d: 0.3,  T1d0: 8.0,
    X_q: 1.7,  X1q: 0.55, T1q0: 0.4,
    X2d: 0.25, T2d0: 0.03,
    X2q: 0.25, T2q0: 0.05,
-   R_a: 0.0, X_l: 0.0,
+   R_a: 0.0,
    S_10: 0.0392, S_12: 0.2227,
    H: 6.175, D: 0.0,
    Omega_b: 314.1592653589793, omega_s: 1.0, K_sec: 1.0, K_delta: 0.0001,
