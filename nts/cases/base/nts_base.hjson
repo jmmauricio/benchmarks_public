@@ -191,7 +191,51 @@ results: {
       [49.0, 1350.0], [49.2, 1350.0], [49.4, 1350.0], [49.6, 1350.0], [49.8, 1350.0],
       [50.0, 1350.0]
     ]
-  }
+  },
+
+  // ── Dominant electromechanical mode — bus 2-3 line X_L sweep ─────────
+  // NTS reference: Figura 18 ("Barrido X_L en el modo electromecánico",
+  // page 105 of 20210709-NTS-SEPE-v2.1).
+  // pydae model: genrou (IEEE 1110 Model 2.2 / Anderson-Fouad) on both
+  // generators, no X_l field. Mode selected by max participation factor
+  // on delta_1.
+  //   freq_Hz = |imag| / (2*pi)    zeta = -real / sqrt(real^2 + imag^2)
+  // Reproduce with pydae:
+  //   change_line(model, {bus_j:"2", bus_k:"3", X_pu: <X_L>, R_pu:0, Bs_pu:0, S_mva:100})
+  //   model.ini({}, "nts_base_xy_0.json")
+  //   model.A_eval()
+  // See autovalores.md (this dir) and tests/bps/syns/test_genrou.py
+  // in the pydae repo.
+  eigenvalues_XL_sweep: [
+    {X_L: 0.05, real: -1.1620, imag: 4.5909, freq_Hz: 0.731, zeta: 0.245},
+    {X_L: 0.10, real: -0.8601, imag: 3.4753, freq_Hz: 0.553, zeta: 0.240},
+    {X_L: 0.15, real: -0.6548, imag: 2.8240, freq_Hz: 0.449, zeta: 0.226},
+    {X_L: 0.20, real: -0.4927, imag: 2.4365, freq_Hz: 0.388, zeta: 0.198},
+    {X_L: 0.25, real: -0.3882, imag: 2.1835, freq_Hz: 0.348, zeta: 0.175},
+    {X_L: 0.30, real: -0.3222, imag: 1.9960, freq_Hz: 0.318, zeta: 0.159},
+    {X_L: 0.35, real: -0.2786, imag: 1.8449, freq_Hz: 0.294, zeta: 0.149},
+    {X_L: 0.40, real: -0.2480, imag: 1.7167, freq_Hz: 0.273, zeta: 0.143},
+    {X_L: 0.50, real: -0.2075, imag: 1.5019, freq_Hz: 0.239, zeta: 0.137},
+    {X_L: 0.60, real: -0.1804, imag: 1.3187, freq_Hz: 0.210, zeta: 0.136}
+  ],
+
+  // NTS Figura 18 read-offs at the same X_L values.
+  //   X_L = 0.01 (× start) and X_L = 0.60 (○ end) are explicitly labelled
+  //   in the figure; intermediate values are visual interpolation along
+  //   the marked locus and carry ~1 pp damping uncertainty.
+  eigenvalues_XL_sweep_nts_fig18: [
+    {X_L: 0.01, real: -2.00, imag: 6.30, freq_Hz: 1.003, zeta: 0.303, source: "labelled"},
+    {X_L: 0.05, real: -1.17, imag: 4.59, freq_Hz: 0.731, zeta: 0.247, source: "interp"},
+    {X_L: 0.10, real: -0.87, imag: 3.48, freq_Hz: 0.554, zeta: 0.242, source: "interp"},
+    {X_L: 0.15, real: -0.67, imag: 2.83, freq_Hz: 0.450, zeta: 0.230, source: "interp"},
+    {X_L: 0.20, real: -0.50, imag: 2.44, freq_Hz: 0.388, zeta: 0.201, source: "interp"},
+    {X_L: 0.25, real: -0.40, imag: 2.19, freq_Hz: 0.349, zeta: 0.180, source: "interp"},
+    {X_L: 0.30, real: -0.32, imag: 2.00, freq_Hz: 0.318, zeta: 0.158, source: "interp"},
+    {X_L: 0.35, real: -0.28, imag: 1.85, freq_Hz: 0.294, zeta: 0.150, source: "interp"},
+    {X_L: 0.40, real: -0.24, imag: 1.72, freq_Hz: 0.274, zeta: 0.138, source: "interp"},
+    {X_L: 0.50, real: -0.21, imag: 1.51, freq_Hz: 0.240, zeta: 0.138, source: "interp"},
+    {X_L: 0.60, real: -0.18, imag: 1.32, freq_Hz: 0.210, zeta: 0.135, source: "labelled"}
+  ]
 }
 }
 
