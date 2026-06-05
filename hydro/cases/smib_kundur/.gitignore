@@ -1,0 +1,8 @@
+# Ignore build artefacts and stale state; keep source.
+*
+!.gitignore
+!*.hjson
+!main.py
+!README.md
+!*.md
+!*.png
