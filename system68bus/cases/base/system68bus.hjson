@@ -1,0 +1,566 @@
+{
+// 68-bus (NETS/NYPS), 16-generator, 5-area benchmark — VERBATIM from PES-TR18.
+// Source: IEEE PES Task Force on Benchmark Systems for Stability Controls,
+// "Benchmark Systems for Small-Signal Stability Analysis and Control",
+// PES-TR18 (August 2015) §5.6.  Original work: A. K. Singh, B. Pal, "Report on
+// the 68-bus, 16-machine, 5-area System" (USP, 2013) and Kuiava, Fernandes,
+// Mansour, Ramos, "Report on the 68-bus system using PacDyn/ANATEM" (2014).
+//
+// Topology: a reduced-order equivalent of the New England Test System (NETS)
+// plus New York Power System (NYPS), with three other neighbouring areas
+// represented as equivalent generators (G14, G15, G16) connected via three
+// double-circuit tie lines (60-61, 53-54, 27-53).  Bus 16 is the slack.
+//
+// Approximations vs PESTR18 (no exact match in pydae yet):
+//   • G1-G8, G10-G12 use the IEEE ST1A AVR (`st1`) — PESTR18 specifies the
+//     IEEE DC4B excitation system (Table 5.53) which is not in pydae today;
+//     ST1A with Table 5.54 parameters is the closest available approximation.
+//   • PSS uses `pss_kundur_2` (Kundur 2-stage washout + lead-lag), which is
+//     a structural subset of IEEE PSS1A — the 2nd-order numerator/denominator
+//     blocks (A1-A6 in Table 5.55) are NOT representable; A1=0.04, A5=0.15 on
+//     the †† generators are dropped.  For small-signal analysis at the
+//     electromechanical frequencies the impact is small.
+//   • G13-G16 are equivalent generators representing other areas; PESTR18
+//     does not specify AVRs/PSSs for them.  Modelled here with constant
+//     field voltage (no AVR) and no PSS.
+//
+// System base: S_base = 100 MVA, 60 Hz.  GSUs on 100 MVA base per Table 5.47.
+
+system: {name: "system68bus", S_base: 100e6},
+agc: {K_p_agc: 0.0, K_i_agc: 0.01, gen: "G16"}
+
+// PESTR18 Tables 5.43 + 5.44 — 68 buses.  V_base is not tabulated per bus by
+// PES-TR18, so a representative 230 kV is used for the transmission network
+// and 20 kV for the generator low-voltage buses — these are dynamics-irrelevant
+// (pydae uses per-unit internally) and only matter if you convert outputs to SI.
+buses: [
+  {name: "01", P_W: 0, Q_var: 0, U_kV:  20.0},
+  {name: "02", P_W: 0, Q_var: 0, U_kV:  20.0},
+  {name: "03", P_W: 0, Q_var: 0, U_kV:  20.0},
+  {name: "04", P_W: 0, Q_var: 0, U_kV:  20.0},
+  {name: "05", P_W: 0, Q_var: 0, U_kV:  20.0},
+  {name: "06", P_W: 0, Q_var: 0, U_kV:  20.0},
+  {name: "07", P_W: 0, Q_var: 0, U_kV:  20.0},
+  {name: "08", P_W: 0, Q_var: 0, U_kV:  20.0},
+  {name: "09", P_W: 0, Q_var: 0, U_kV:  20.0},
+  {name: "10", P_W: 0, Q_var: 0, U_kV:  20.0},
+  {name: "11", P_W: 0, Q_var: 0, U_kV:  20.0},
+  {name: "12", P_W: 0, Q_var: 0, U_kV:  20.0},
+  {name: "13", P_W: 0, Q_var: 0, U_kV:  20.0},
+  {name: "14", P_W: 0, Q_var: 0, U_kV:  20.0},
+  {name: "15", P_W: 0, Q_var: 0, U_kV:  20.0},
+  {name: "16", P_W: 0, Q_var: 0, U_kV:  20.0},   // slack
+  {name: "17", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "18", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "19", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "20", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "21", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "22", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "23", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "24", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "25", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "26", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "27", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "28", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "29", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "30", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "31", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "32", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "33", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "34", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "35", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "36", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "37", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "38", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "39", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "40", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "41", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "42", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "43", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "44", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "45", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "46", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "47", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "48", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "49", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "50", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "51", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "52", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "53", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "54", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "55", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "56", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "57", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "58", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "59", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "60", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "61", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "62", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "63", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "64", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "65", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "66", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "67", P_W: 0, Q_var: 0, U_kV: 230.0},
+  {name: "68", P_W: 0, Q_var: 0, U_kV: 230.0}
+],
+
+// PESTR18 Table 5.48 — loads (constant admittance, K_zp=K_zq=1.0 per §5.6.1).
+loads: [
+  {bus: "17", type: "zip", p_mw: 6000.0, q_mvar:  300.00, K_zp: 1.0, K_zq: 1.0},
+  {bus: "18", type: "zip", p_mw: 2470.0, q_mvar:  123.00, K_zp: 1.0, K_zq: 1.0},
+  {bus: "20", type: "zip", p_mw:  680.0, q_mvar:  103.00, K_zp: 1.0, K_zq: 1.0},
+  {bus: "21", type: "zip", p_mw:  274.0, q_mvar:  115.00, K_zp: 1.0, K_zq: 1.0},
+  {bus: "23", type: "zip", p_mw:  248.0, q_mvar:   85.00, K_zp: 1.0, K_zq: 1.0},
+  {bus: "24", type: "zip", p_mw:  309.0, q_mvar:  -92.00, K_zp: 1.0, K_zq: 1.0},
+  {bus: "25", type: "zip", p_mw:  224.0, q_mvar:   47.00, K_zp: 1.0, K_zq: 1.0},
+  {bus: "26", type: "zip", p_mw:  139.0, q_mvar:   17.00, K_zp: 1.0, K_zq: 1.0},
+  {bus: "27", type: "zip", p_mw:  281.0, q_mvar:   76.00, K_zp: 1.0, K_zq: 1.0},
+  {bus: "28", type: "zip", p_mw:  206.0, q_mvar:   28.00, K_zp: 1.0, K_zq: 1.0},
+  {bus: "29", type: "zip", p_mw:  284.0, q_mvar:   27.00, K_zp: 1.0, K_zq: 1.0},
+  {bus: "33", type: "zip", p_mw:  112.0, q_mvar:    0.00, K_zp: 1.0, K_zq: 1.0},
+  {bus: "36", type: "zip", p_mw:  102.0, q_mvar:  -19.46, K_zp: 1.0, K_zq: 1.0},
+  {bus: "39", type: "zip", p_mw:  267.0, q_mvar:   12.60, K_zp: 1.0, K_zq: 1.0},
+  {bus: "40", type: "zip", p_mw:   65.63, q_mvar:  23.53, K_zp: 1.0, K_zq: 1.0},
+  {bus: "41", type: "zip", p_mw: 1000.0, q_mvar:  250.00, K_zp: 1.0, K_zq: 1.0},
+  {bus: "42", type: "zip", p_mw: 1150.0, q_mvar:  250.00, K_zp: 1.0, K_zq: 1.0},
+  {bus: "44", type: "zip", p_mw:  267.55, q_mvar:   4.84, K_zp: 1.0, K_zq: 1.0},
+  {bus: "45", type: "zip", p_mw:  208.0, q_mvar:   21.00, K_zp: 1.0, K_zq: 1.0},
+  {bus: "46", type: "zip", p_mw:  150.7, q_mvar:   28.50, K_zp: 1.0, K_zq: 1.0},
+  {bus: "47", type: "zip", p_mw:  203.12, q_mvar: 32.59, K_zp: 1.0, K_zq: 1.0},
+  {bus: "48", type: "zip", p_mw:  241.2, q_mvar:    2.20, K_zp: 1.0, K_zq: 1.0},
+  {bus: "49", type: "zip", p_mw:  164.0, q_mvar:   29.00, K_zp: 1.0, K_zq: 1.0},
+  {bus: "50", type: "zip", p_mw:  100.0, q_mvar: -147.00, K_zp: 1.0, K_zq: 1.0},
+  {bus: "51", type: "zip", p_mw:  337.0, q_mvar: -122.00, K_zp: 1.0, K_zq: 1.0},
+  {bus: "52", type: "zip", p_mw:  158.0, q_mvar:   30.00, K_zp: 1.0, K_zq: 1.0},
+  {bus: "53", type: "zip", p_mw:  252.7, q_mvar:  118.56, K_zp: 1.0, K_zq: 1.0},
+  {bus: "55", type: "zip", p_mw:  322.0, q_mvar:    2.00, K_zp: 1.0, K_zq: 1.0},
+  {bus: "56", type: "zip", p_mw:  200.0, q_mvar:   73.60, K_zp: 1.0, K_zq: 1.0},
+  {bus: "59", type: "zip", p_mw:  234.0, q_mvar:   84.00, K_zp: 1.0, K_zq: 1.0},
+  {bus: "60", type: "zip", p_mw:  208.8, q_mvar:   70.80, K_zp: 1.0, K_zq: 1.0},
+  {bus: "61", type: "zip", p_mw:  104.0, q_mvar:  125.00, K_zp: 1.0, K_zq: 1.0},
+  {bus: "64", type: "zip", p_mw:    9.0, q_mvar:   88.00, K_zp: 1.0, K_zq: 1.0},
+  {bus: "67", type: "zip", p_mw:  320.0, q_mvar:  153.00, K_zp: 1.0, K_zq: 1.0},
+  {bus: "68", type: "zip", p_mw:  329.0, q_mvar:   32.00, K_zp: 1.0, K_zq: 1.0}
+],
+
+// PESTR18 Tables 5.45 + 5.46 — Transmission Lines (on 100 MVA base).
+lines: [
+  {bus_j: "07", bus_k: "23", R_pu: 0.0005,  X_pu: 0.0272, B_pu: 0.000,   S_mva: 100.0},
+  {bus_j: "17", bus_k: "36", R_pu: 0.0005,  X_pu: 0.0045, B_pu: 0.320,   S_mva: 100.0},
+  {bus_j: "17", bus_k: "43", R_pu: 0.0005,  X_pu: 0.0276, B_pu: 0.000,   S_mva: 100.0},
+  {bus_j: "18", bus_k: "42", R_pu: 0.004,   X_pu: 0.060,  B_pu: 2.250,   S_mva: 100.0},
+  {bus_j: "18", bus_k: "49", R_pu: 0.0076,  X_pu: 0.1141, B_pu: 1.160,   S_mva: 100.0},
+  {bus_j: "18", bus_k: "50", R_pu: 0.0012,  X_pu: 0.0288, B_pu: 2.060,   S_mva: 100.0},
+  {bus_j: "19", bus_k: "68", R_pu: 0.0016,  X_pu: 0.0195, B_pu: 0.304,   S_mva: 100.0},
+  {bus_j: "21", bus_k: "22", R_pu: 0.0008,  X_pu: 0.014,  B_pu: 0.2565,  S_mva: 100.0},
+  {bus_j: "21", bus_k: "68", R_pu: 0.0008,  X_pu: 0.0135, B_pu: 0.2548,  S_mva: 100.0},
+  {bus_j: "22", bus_k: "23", R_pu: 0.0006,  X_pu: 0.0096, B_pu: 0.1846,  S_mva: 100.0},
+  {bus_j: "23", bus_k: "24", R_pu: 0.0022,  X_pu: 0.035,  B_pu: 0.361,   S_mva: 100.0},
+  {bus_j: "24", bus_k: "68", R_pu: 0.0003,  X_pu: 0.0059, B_pu: 0.068,   S_mva: 100.0},
+  {bus_j: "25", bus_k: "26", R_pu: 0.0032,  X_pu: 0.0323, B_pu: 0.531,   S_mva: 100.0},
+  {bus_j: "25", bus_k: "54", R_pu: 0.007,   X_pu: 0.0086, B_pu: 0.146,   S_mva: 100.0},
+  {bus_j: "26", bus_k: "27", R_pu: 0.0014,  X_pu: 0.0147, B_pu: 0.2396,  S_mva: 100.0},
+  {bus_j: "26", bus_k: "28", R_pu: 0.0043,  X_pu: 0.0474, B_pu: 0.7802,  S_mva: 100.0},
+  {bus_j: "26", bus_k: "29", R_pu: 0.0057,  X_pu: 0.0625, B_pu: 1.029,   S_mva: 100.0},
+  {bus_j: "27", bus_k: "37", R_pu: 0.0013,  X_pu: 0.0173, B_pu: 0.3216,  S_mva: 100.0},
+  {bus_j: "27", bus_k: "53", R_pu: 0.032,   X_pu: 0.32,   B_pu: 0.410,   S_mva: 100.0},
+  {bus_j: "28", bus_k: "29", R_pu: 0.0014,  X_pu: 0.0151, B_pu: 0.249,   S_mva: 100.0},
+  {bus_j: "30", bus_k: "31", R_pu: 0.0013,  X_pu: 0.0187, B_pu: 0.333,   S_mva: 100.0},
+  {bus_j: "30", bus_k: "32", R_pu: 0.0024,  X_pu: 0.0288, B_pu: 0.488,   S_mva: 100.0},
+  {bus_j: "30", bus_k: "53", R_pu: 0.0008,  X_pu: 0.0074, B_pu: 0.480,   S_mva: 100.0},
+  {bus_j: "30", bus_k: "61", R_pu: 0.00095, X_pu: 0.00915, B_pu: 0.580,  S_mva: 100.0},
+  {bus_j: "31", bus_k: "38", R_pu: 0.0011,  X_pu: 0.0147, B_pu: 0.247,   S_mva: 100.0},
+  {bus_j: "31", bus_k: "53", R_pu: 0.0016,  X_pu: 0.0163, B_pu: 0.250,   S_mva: 100.0},
+  {bus_j: "32", bus_k: "33", R_pu: 0.0008,  X_pu: 0.0099, B_pu: 0.168,   S_mva: 100.0},
+  {bus_j: "33", bus_k: "34", R_pu: 0.0011,  X_pu: 0.0157, B_pu: 0.202,   S_mva: 100.0},
+  {bus_j: "33", bus_k: "38", R_pu: 0.0036,  X_pu: 0.0444, B_pu: 0.693,   S_mva: 100.0},
+  {bus_j: "34", bus_k: "36", R_pu: 0.0033,  X_pu: 0.0111, B_pu: 1.450,   S_mva: 100.0},
+  {bus_j: "35", bus_k: "45", R_pu: 0.0007,  X_pu: 0.0175, B_pu: 1.390,   S_mva: 100.0},
+  {bus_j: "36", bus_k: "61", R_pu: 0.0011,  X_pu: 0.0098, B_pu: 0.680,   S_mva: 100.0},
+  {bus_j: "37", bus_k: "52", R_pu: 0.0007,  X_pu: 0.0082, B_pu: 0.1319,  S_mva: 100.0},
+  {bus_j: "37", bus_k: "68", R_pu: 0.0007,  X_pu: 0.0089, B_pu: 0.1342,  S_mva: 100.0},
+  {bus_j: "38", bus_k: "46", R_pu: 0.0022,  X_pu: 0.0284, B_pu: 0.430,   S_mva: 100.0},
+  {bus_j: "39", bus_k: "44", R_pu: 0.0,     X_pu: 0.0411, B_pu: 0.000,   S_mva: 100.0},
+  {bus_j: "39", bus_k: "45", R_pu: 0.0,     X_pu: 0.0839, B_pu: 0.000,   S_mva: 100.0},
+  {bus_j: "40", bus_k: "41", R_pu: 0.006,   X_pu: 0.084,  B_pu: 3.150,   S_mva: 100.0},
+  {bus_j: "40", bus_k: "48", R_pu: 0.002,   X_pu: 0.022,  B_pu: 1.280,   S_mva: 100.0},
+  {bus_j: "41", bus_k: "42", R_pu: 0.004,   X_pu: 0.060,  B_pu: 2.250,   S_mva: 100.0},
+  {bus_j: "43", bus_k: "44", R_pu: 0.0001,  X_pu: 0.0011, B_pu: 0.000,   S_mva: 100.0},
+  {bus_j: "44", bus_k: "45", R_pu: 0.0025,  X_pu: 0.073,  B_pu: 0.000,   S_mva: 100.0},
+  {bus_j: "45", bus_k: "51", R_pu: 0.0004,  X_pu: 0.0105, B_pu: 0.720,   S_mva: 100.0},
+  {bus_j: "46", bus_k: "49", R_pu: 0.0018,  X_pu: 0.0274, B_pu: 0.270,   S_mva: 100.0},
+  {bus_j: "47", bus_k: "48", R_pu: 0.00125, X_pu: 0.0134, B_pu: 0.800,   S_mva: 100.0},
+  {bus_j: "47", bus_k: "53", R_pu: 0.0013,  X_pu: 0.0188, B_pu: 1.310,   S_mva: 100.0},
+  {bus_j: "50", bus_k: "51", R_pu: 0.0009,  X_pu: 0.0221, B_pu: 1.620,   S_mva: 100.0},
+  {bus_j: "52", bus_k: "55", R_pu: 0.0011,  X_pu: 0.0133, B_pu: 0.2138,  S_mva: 100.0},
+  {bus_j: "53", bus_k: "54", R_pu: 0.0035,  X_pu: 0.0411, B_pu: 0.6987,  S_mva: 100.0},
+  {bus_j: "54", bus_k: "55", R_pu: 0.0013,  X_pu: 0.0151, B_pu: 0.2572,  S_mva: 100.0},
+  {bus_j: "55", bus_k: "56", R_pu: 0.0013,  X_pu: 0.0213, B_pu: 0.2214,  S_mva: 100.0},
+  {bus_j: "56", bus_k: "57", R_pu: 0.0008,  X_pu: 0.0128, B_pu: 0.1342,  S_mva: 100.0},
+  {bus_j: "56", bus_k: "66", R_pu: 0.0008,  X_pu: 0.0129, B_pu: 0.1382,  S_mva: 100.0},
+  {bus_j: "57", bus_k: "58", R_pu: 0.0002,  X_pu: 0.0026, B_pu: 0.0434,  S_mva: 100.0},
+  {bus_j: "57", bus_k: "60", R_pu: 0.0008,  X_pu: 0.0112, B_pu: 0.1476,  S_mva: 100.0},
+  {bus_j: "58", bus_k: "59", R_pu: 0.0006,  X_pu: 0.0092, B_pu: 0.113,   S_mva: 100.0},
+  {bus_j: "58", bus_k: "63", R_pu: 0.0007,  X_pu: 0.0082, B_pu: 0.1389,  S_mva: 100.0},
+  {bus_j: "59", bus_k: "60", R_pu: 0.0004,  X_pu: 0.0046, B_pu: 0.078,   S_mva: 100.0},
+  {bus_j: "60", bus_k: "61", R_pu: 0.0023,  X_pu: 0.0363, B_pu: 0.3804,  S_mva: 100.0},
+  {bus_j: "62", bus_k: "63", R_pu: 0.0004,  X_pu: 0.0043, B_pu: 0.0729,  S_mva: 100.0},
+  {bus_j: "62", bus_k: "65", R_pu: 0.0004,  X_pu: 0.0043, B_pu: 0.0729,  S_mva: 100.0},
+  {bus_j: "65", bus_k: "66", R_pu: 0.0009,  X_pu: 0.0101, B_pu: 0.1723,  S_mva: 100.0},
+  {bus_j: "66", bus_k: "67", R_pu: 0.0018,  X_pu: 0.0217, B_pu: 0.366,   S_mva: 100.0},
+  {bus_j: "67", bus_k: "68", R_pu: 0.0009,  X_pu: 0.0094, B_pu: 0.171,   S_mva: 100.0}
+],
+
+// PESTR18 Table 5.47 — Transformer Data (on 100 MVA base, tap on the "from"
+// side).  In PESTR18 the "from" column is the gen-LV bus (1-16); pydae's
+// convention is bus_j = "from" so the GSUs have bus_j on the LV side.
+transformers: [
+  {bus_j: "01", bus_k: "54", R_pu: 0.0,     X_pu: 0.0181, S_mva: 100.0, tap_m: 1.025},
+  {bus_j: "02", bus_k: "58", R_pu: 0.0,     X_pu: 0.0250, S_mva: 100.0, tap_m: 1.070},
+  {bus_j: "03", bus_k: "62", R_pu: 0.0,     X_pu: 0.0200, S_mva: 100.0, tap_m: 1.070},
+  {bus_j: "04", bus_k: "19", R_pu: 0.0007,  X_pu: 0.0142, S_mva: 100.0, tap_m: 1.070},
+  {bus_j: "05", bus_k: "20", R_pu: 0.0009,  X_pu: 0.0180, S_mva: 100.0, tap_m: 1.009},
+  {bus_j: "06", bus_k: "22", R_pu: 0.0,     X_pu: 0.0143, S_mva: 100.0, tap_m: 1.025},
+  {bus_j: "08", bus_k: "25", R_pu: 0.0006,  X_pu: 0.0232, S_mva: 100.0, tap_m: 1.025},
+  {bus_j: "09", bus_k: "29", R_pu: 0.0008,  X_pu: 0.0156, S_mva: 100.0, tap_m: 1.025},
+  {bus_j: "10", bus_k: "31", R_pu: 0.0,     X_pu: 0.0260, S_mva: 100.0, tap_m: 1.040},
+  {bus_j: "11", bus_k: "32", R_pu: 0.0,     X_pu: 0.0130, S_mva: 100.0, tap_m: 1.040},
+  {bus_j: "12", bus_k: "36", R_pu: 0.0,     X_pu: 0.0075, S_mva: 100.0, tap_m: 1.040},
+  {bus_j: "13", bus_k: "17", R_pu: 0.0,     X_pu: 0.0033, S_mva: 100.0, tap_m: 1.040},
+  {bus_j: "14", bus_k: "41", R_pu: 0.0,     X_pu: 0.0015, S_mva: 100.0, tap_m: 1.000},
+  {bus_j: "15", bus_k: "42", R_pu: 0.0,     X_pu: 0.0015, S_mva: 100.0, tap_m: 1.000},
+  {bus_j: "16", bus_k: "18", R_pu: 0.0,     X_pu: 0.0030, S_mva: 100.0, tap_m: 1.000},
+  {bus_j: "20", bus_k: "19", R_pu: 0.0007,  X_pu: 0.0138, S_mva: 100.0, tap_m: 1.060},
+  {bus_j: "34", bus_k: "35", R_pu: 0.0001,  X_pu: 0.0074, S_mva: 100.0, tap_m: 0.946},
+  {bus_j: "63", bus_k: "64", R_pu: 0.0016,  X_pu: 0.0435, S_mva: 100.0, tap_m: 1.060},
+  {bus_j: "65", bus_k: "64", R_pu: 0.0016,  X_pu: 0.0435, S_mva: 100.0, tap_m: 1.060}
+],
+
+// Placeholder shunt at bus 60 for fault injection during run().
+shunts: [{bus:"60", X_pu:1e6, R_pu:0.0, S_mva:100}],
+
+// PESTR18 Tables 5.50-5.52 — synchronous machine data on each machine MBASE.
+// PSS/E GENROE → pydae genroe (6th-order, geometric saturation S(E)=B·E^N).
+// X_l listed by PESTR18 is intentionally NOT passed to genroe — PSS/E /
+// IEEE 1110 convention treats X''d, X''q as terminal-referred.
+//
+// Per PESTR18 §4.6, G1-G12 use IEEE DC4B AVRs (Table 5.53) and G9 uses ST1A
+// (Table 5.54).  pydae has ST1A (`st1`) but not DC4B today — every gen with an
+// AVR uses `st1` with Table 5.54 parameters as the closest approximation.
+// G13-G16 are equivalent generators for areas 3, 4, 5 — no AVR, no PSS, with
+// constant field voltage.  Each is anchored via K_delta=0 so they can drift.
+// G16 (slack) carries K_delta=0.001 + Delta_ref=0.
+//
+// PSS — IEEE PSS1A (Table 5.55) on G1-G12; pydae's `pss_kundur_2` implements
+// the washout + two-stage lead-lag; the 2nd-order numerator/denominator
+// blocks (A1-A6) of PSS1A are not representable and are dropped.
+// Set K_stab=0 on every gen to disable PSS (Case 1 in PESTR18 §5.6.3).
+syns: [
+  // G1 — Area 1 (PV, V=1.045)
+  {bus: "01", name: "G01", type: "genroe",
+    S_n: 600e6, F_n: 60, H: 7.0, D: 0, R_a: 0.0,
+    X_d: 0.6, X_q: 0.414, X1d: 0.186, X1q: 0.25, T1d0: 10.2, T1q0: 1.5,
+    X2d: 0.15, X2q: 0.15, T2d0: 0.05, T2q0: 0.035,
+    S_10: 0.001, S_12: 0.01,
+    K_sec: 0, K_delta: 0,
+    avr: {type: "st1", K_A: 200.0, T_R: 0.01, T_C: 1.0, T_B: 1.0, V_Imax: 99.0, V_Imin: -99.0, V_Rmax: 5.0, V_Rmin: -5.0, v_ref: 1.045},
+    gov: {type: "tgov1", R: 0.05, T_1: 0.5, V_max: 100.0, V_min: -100.0, T_2: 2.1, T_3: 7.0, D_t: 0.0},
+    pss: {type: "pss_kundur_2", K_stab: 20.0, T_w: 15.0, T_1: 0.15, T_2: 0.04, T_3: 0.15, T_4: 0.04, V_Smax: 0.20, V_Smin: -0.05},
+    lc:  {K_i: 0.01, p_c_lc: 0.4167}
+  },
+  // G2 — Area 1 (PV, V=0.980)
+  {bus: "02", name: "G02", type: "genroe",
+    S_n: 600e6, F_n: 60, H: 7.0, D: 0, R_a: 0.0,
+    X_d: 0.6, X_q: 0.414, X1d: 0.186, X1q: 0.25, T1d0: 10.2, T1q0: 1.5,
+    X2d: 0.15, X2q: 0.15, T2d0: 0.05, T2q0: 0.035,
+    S_10: 0.001, S_12: 0.01,
+    K_sec: 0, K_delta: 0,
+    avr: {type: "st1", K_A: 200.0, T_R: 0.01, T_C: 1.0, T_B: 1.0, V_Imax: 99.0, V_Imin: -99.0, V_Rmax: 5.0, V_Rmin: -5.0, v_ref: 0.980},
+    gov: {type: "tgov1", R: 0.05, T_1: 0.5, V_max: 100.0, V_min: -100.0, T_2: 2.1, T_3: 7.0, D_t: 0.0},
+    pss: {type: "pss_kundur_2", K_stab: 20.0, T_w: 15.0, T_1: 0.15, T_2: 0.04, T_3: 0.15, T_4: 0.04, V_Smax: 0.20, V_Smin: -0.05},
+    lc:  {K_i: 0.01, p_c_lc: 0.9083}
+  },
+  // G3 — Area 1 (PV, V=0.983)
+  {bus: "03", name: "G03", type: "genroe",
+    S_n: 700e6, F_n: 60, H: 5.1143, D: 0, R_a: 0.0,
+    X_d: 1.7465, X_q: 1.659, X1d: 0.3717, X1q: 0.5, T1d0: 5.7, T1q0: 1.5,
+    X2d: 0.315, X2q: 0.315, T2d0: 0.05, T2q0: 0.035,
+    S_10: 0.001, S_12: 0.01,
+    K_sec: 0, K_delta: 0,
+    avr: {type: "st1", K_A: 200.0, T_R: 0.01, T_C: 1.0, T_B: 1.0, V_Imax: 99.0, V_Imin: -99.0, V_Rmax: 5.0, V_Rmin: -5.0, v_ref: 0.983},
+    gov: {type: "tgov1", R: 0.05, T_1: 0.5, V_max: 100.0, V_min: -100.0, T_2: 2.1, T_3: 7.0, D_t: 0.0},
+    pss: {type: "pss_kundur_2", K_stab: 20.0, T_w: 15.0, T_1: 0.15, T_2: 0.04, T_3: 0.15, T_4: 0.04, V_Smax: 0.20, V_Smin: -0.05},
+    lc:  {K_i: 0.01, p_c_lc: 0.9286}
+  },
+  // G4 — Area 1 (PV, V=0.997)
+  {bus: "04", name: "G04", type: "genroe",
+    S_n: 700e6, F_n: 60, H: 4.0857, D: 0, R_a: 0.0,
+    X_d: 1.834, X_q: 1.806, X1d: 0.3052, X1q: 0.41, T1d0: 5.69, T1q0: 1.5,
+    X2d: 0.245, X2q: 0.245, T2d0: 0.05, T2q0: 0.035,
+    S_10: 0.001, S_12: 0.01,
+    K_sec: 0, K_delta: 0,
+    avr: {type: "st1", K_A: 200.0, T_R: 0.01, T_C: 1.0, T_B: 1.0, V_Imax: 99.0, V_Imin: -99.0, V_Rmax: 5.0, V_Rmin: -5.0, v_ref: 0.997},
+    gov: {type: "tgov1", R: 0.05, T_1: 0.5, V_max: 100.0, V_min: -100.0, T_2: 2.1, T_3: 7.0, D_t: 0.0},
+    pss: {type: "pss_kundur_2", K_stab: 20.0, T_w: 15.0, T_1: 0.15, T_2: 0.04, T_3: 0.15, T_4: 0.04, V_Smax: 0.20, V_Smin: -0.05},
+    lc:  {K_i: 0.01, p_c_lc: 0.9029}
+  },
+  // G5 — Area 1 (PV, V=1.011)
+  {bus: "05", name: "G05", type: "genroe",
+    S_n: 600e6, F_n: 60, H: 4.3333, D: 0, R_a: 0.0,
+    X_d: 1.98, X_q: 1.86, X1d: 0.396, X1q: 0.53, T1d0: 5.4, T1q0: 0.44,
+    X2d: 0.30, X2q: 0.30, T2d0: 0.05, T2q0: 0.035,
+    S_10: 0.001, S_12: 0.01,
+    K_sec: 0, K_delta: 0,
+    avr: {type: "st1", K_A: 200.0, T_R: 0.01, T_C: 1.0, T_B: 1.0, V_Imax: 99.0, V_Imin: -99.0, V_Rmax: 5.0, V_Rmin: -5.0, v_ref: 1.011},
+    gov: {type: "tgov1", R: 0.05, T_1: 0.5, V_max: 100.0, V_min: -100.0, T_2: 2.1, T_3: 7.0, D_t: 0.0},
+    pss: {type: "pss_kundur_2", K_stab: 20.0, T_w: 15.0, T_1: 0.15, T_2: 0.04, T_3: 0.15, T_4: 0.04, V_Smax: 0.20, V_Smin: -0.05},
+    lc:  {K_i: 0.01, p_c_lc: 0.8417}
+  },
+  // G6 — Area 1 (PV, V=1.050)
+  {bus: "06", name: "G06", type: "genroe",
+    S_n: 800e6, F_n: 60, H: 4.35, D: 0, R_a: 0.0,
+    X_d: 2.032, X_q: 1.928, X1d: 0.40, X1q: 0.54, T1d0: 7.3, T1q0: 0.4,
+    X2d: 0.32, X2q: 0.32, T2d0: 0.05, T2q0: 0.035,
+    S_10: 0.001, S_12: 0.01,
+    K_sec: 0, K_delta: 0,
+    avr: {type: "st1", K_A: 200.0, T_R: 0.01, T_C: 1.0, T_B: 1.0, V_Imax: 99.0, V_Imin: -99.0, V_Rmax: 5.0, V_Rmin: -5.0, v_ref: 1.050},
+    gov: {type: "tgov1", R: 0.05, T_1: 0.5, V_max: 100.0, V_min: -100.0, T_2: 2.1, T_3: 7.0, D_t: 0.0},
+    pss: {type: "pss_kundur_2", K_stab: 20.0, T_w: 15.0, T_1: 0.15, T_2: 0.04, T_3: 0.15, T_4: 0.04, V_Smax: 0.20, V_Smin: -0.05},
+    lc:  {K_i: 0.01, p_c_lc: 0.8750}
+  },
+  // G7 — Area 1 (PV, V=1.063).  Note: G7 is connected by line 7-23 (no GSU).
+  {bus: "07", name: "G07", type: "genroe",
+    S_n: 600e6, F_n: 60, H: 4.4, D: 0, R_a: 0.0,
+    X_d: 1.77, X_q: 1.752, X1d: 0.294, X1q: 0.4, T1d0: 5.66, T1q0: 1.5,
+    X2d: 0.24, X2q: 0.24, T2d0: 0.05, T2q0: 0.035,
+    S_10: 0.001, S_12: 0.01,
+    K_sec: 0, K_delta: 0,
+    avr: {type: "st1", K_A: 200.0, T_R: 0.01, T_C: 1.0, T_B: 1.0, V_Imax: 99.0, V_Imin: -99.0, V_Rmax: 5.0, V_Rmin: -5.0, v_ref: 1.063},
+    gov: {type: "tgov1", R: 0.05, T_1: 0.5, V_max: 100.0, V_min: -100.0, T_2: 2.1, T_3: 7.0, D_t: 0.0},
+    pss: {type: "pss_kundur_2", K_stab: 20.0, T_w: 15.0, T_1: 0.15, T_2: 0.04, T_3: 0.15, T_4: 0.04, V_Smax: 0.20, V_Smin: -0.05},
+    lc:  {K_i: 0.01, p_c_lc: 0.9333}
+  },
+  // G8 — Area 1 (PV, V=1.030)
+  {bus: "08", name: "G08", type: "genroe",
+    S_n: 600e6, F_n: 60, H: 4.05, D: 0, R_a: 0.0,
+    X_d: 1.74, X_q: 1.68, X1d: 0.342, X1q: 0.46, T1d0: 6.7, T1q0: 0.41,
+    X2d: 0.27, X2q: 0.27, T2d0: 0.05, T2q0: 0.035,
+    S_10: 0.001, S_12: 0.01,
+    K_sec: 0, K_delta: 0,
+    avr: {type: "st1", K_A: 200.0, T_R: 0.01, T_C: 1.0, T_B: 1.0, V_Imax: 99.0, V_Imin: -99.0, V_Rmax: 5.0, V_Rmin: -5.0, v_ref: 1.030},
+    gov: {type: "tgov1", R: 0.05, T_1: 0.5, V_max: 100.0, V_min: -100.0, T_2: 2.1, T_3: 7.0, D_t: 0.0},
+    pss: {type: "pss_kundur_2", K_stab: 20.0, T_w: 15.0, T_1: 0.15, T_2: 0.04, T_3: 0.15, T_4: 0.04, V_Smax: 0.20, V_Smin: -0.05},
+    lc:  {K_i: 0.01, p_c_lc: 0.9000}
+  },
+  // G9 — Area 2 (PV, V=1.025).  PESTR18 §4.6: G9 uses ST1A (already mapped).
+  //   PSS K_stab=12, T_1=T_3=0.09, T_2=T_4=0.02, T_w=10 (Unit 9 column).
+  {bus: "09", name: "G09", type: "genroe",
+    S_n: 900e6, F_n: 60, H: 3.8333, D: 0, R_a: 0.0,
+    X_d: 1.8954, X_q: 1.845, X1d: 0.513, X1q: 0.69, T1d0: 4.79, T1q0: 1.96,
+    X2d: 0.405, X2q: 0.405, T2d0: 0.05, T2q0: 0.035,
+    S_10: 0.001, S_12: 0.01,
+    K_sec: 0, K_delta: 0,
+    avr: {type: "st1", K_A: 200.0, T_R: 0.01, T_C: 1.0, T_B: 1.0, V_Imax: 99.0, V_Imin: -99.0, V_Rmax: 5.0, V_Rmin: -5.0, v_ref: 1.025},
+    gov: {type: "tgov1", R: 0.05, T_1: 0.5, V_max: 100.0, V_min: -100.0, T_2: 2.1, T_3: 7.0, D_t: 0.0},
+    pss: {type: "pss_kundur_2", K_stab: 12.0, T_w: 10.0, T_1: 0.09, T_2: 0.02, T_3: 0.09, T_4: 0.02, V_Smax: 0.20, V_Smin: -0.05},
+    lc:  {K_i: 0.01, p_c_lc: 0.8889}
+  },
+  // G10 — Area 2 (PV, V=1.010)
+  {bus: "10", name: "G10", type: "genroe",
+    S_n: 650e6, F_n: 60, H: 4.7692, D: 0, R_a: 0.0,
+    X_d: 1.0985, X_q: 0.7475, X1d: 0.297, X1q: 0.4, T1d0: 9.37, T1q0: 1.5,
+    X2d: 0.26, X2q: 0.26, T2d0: 0.05, T2q0: 0.035,
+    S_10: 0.001, S_12: 0.01,
+    K_sec: 0, K_delta: 0,
+    avr: {type: "st1", K_A: 200.0, T_R: 0.01, T_C: 1.0, T_B: 1.0, V_Imax: 99.0, V_Imin: -99.0, V_Rmax: 5.0, V_Rmin: -5.0, v_ref: 1.010},
+    gov: {type: "tgov1", R: 0.05, T_1: 0.5, V_max: 100.0, V_min: -100.0, T_2: 2.1, T_3: 7.0, D_t: 0.0},
+    pss: {type: "pss_kundur_2", K_stab: 20.0, T_w: 15.0, T_1: 0.15, T_2: 0.04, T_3: 0.15, T_4: 0.04, V_Smax: 0.20, V_Smin: -0.05},
+    lc:  {K_i: 0.01, p_c_lc: 0.7692}
+  },
+  // G11 — Area 2 (PV, V=1.000)
+  {bus: "11", name: "G11", type: "genroe",
+    S_n: 1700e6, F_n: 60, H: 1.6588, D: 0, R_a: 0.0,
+    X_d: 2.176, X_q: 2.091, X1d: 0.306, X1q: 0.41, T1d0: 4.1, T1q0: 1.5,
+    X2d: 0.204, X2q: 0.204, T2d0: 0.05, T2q0: 0.035,
+    S_10: 0.001, S_12: 0.01,
+    K_sec: 0, K_delta: 0,
+    avr: {type: "st1", K_A: 200.0, T_R: 0.01, T_C: 1.0, T_B: 1.0, V_Imax: 99.0, V_Imin: -99.0, V_Rmax: 5.0, V_Rmin: -5.0, v_ref: 1.000},
+    gov: {type: "tgov1", R: 0.05, T_1: 0.5, V_max: 100.0, V_min: -100.0, T_2: 2.1, T_3: 7.0, D_t: 0.0},
+    pss: {type: "pss_kundur_2", K_stab: 20.0, T_w: 15.0, T_1: 0.15, T_2: 0.04, T_3: 0.15, T_4: 0.04, V_Smax: 0.20, V_Smin: -0.05},
+    lc:  {K_i: 0.01, p_c_lc: 0.5882}
+  },
+  // G12 — Area 2 (PV, V=1.0156)
+  {bus: "12", name: "G12", type: "genroe",
+    S_n: 1500e6, F_n: 60, H: 6.1533, D: 0, R_a: 0.0,
+    X_d: 1.515, X_q: 1.425, X1d: 0.465, X1q: 0.63, T1d0: 7.4, T1q0: 1.5,
+    X2d: 0.375, X2q: 0.375, T2d0: 0.05, T2q0: 0.035,
+    S_10: 0.001, S_12: 0.01,
+    K_sec: 0, K_delta: 0,
+    avr: {type: "st1", K_A: 200.0, T_R: 0.01, T_C: 1.0, T_B: 1.0, V_Imax: 99.0, V_Imin: -99.0, V_Rmax: 5.0, V_Rmin: -5.0, v_ref: 1.0156},
+    gov: {type: "tgov1", R: 0.05, T_1: 0.5, V_max: 100.0, V_min: -100.0, T_2: 2.1, T_3: 7.0, D_t: 0.0},
+    pss: {type: "pss_kundur_2", K_stab: 20.0, T_w: 15.0, T_1: 0.15, T_2: 0.04, T_3: 0.15, T_4: 0.04, V_Smax: 0.20, V_Smin: -0.05},
+    lc:  {K_i: 0.01, p_c_lc: 0.9000}
+  },
+  // G13 — Area 3 equivalent (no AVR, no PSS)
+  {bus: "13", name: "G13", type: "genroe",
+    S_n: 10000e6, F_n: 60, H: 4.96, D: 0, R_a: 0.0,
+    X_d: 1.48, X_q: 1.43, X1d: 0.275, X1q: 0.37, T1d0: 5.9, T1q0: 1.5,
+    X2d: 0.2, X2q: 0.2, T2d0: 0.05, T2q0: 0.035,
+    S_10: 0.001, S_12: 0.01,
+    K_sec: 0, K_delta: 0,
+    gov: {type: "tgov1", R: 0.05, T_1: 0.5, V_max: 100.0, V_min: -100.0, T_2: 2.1, T_3: 7.0, D_t: 0.0},
+    lc:  {K_i: 0.01, p_c_lc: 0.3591}
+  },
+  // G14 — Area 4 equivalent
+  {bus: "14", name: "G14", type: "genroe",
+    S_n: 8700e6, F_n: 60, H: 3.4483, D: 0, R_a: 0.0,
+    X_d: 1.566, X_q: 1.5051, X1d: 0.248, X1q: 0.33, T1d0: 4.1, T1q0: 1.5,
+    X2d: 0.2001, X2q: 0.2001, T2d0: 0.05, T2q0: 0.035,
+    S_10: 0.001, S_12: 0.01,
+    K_sec: 0, K_delta: 0,
+    gov: {type: "tgov1", R: 0.05, T_1: 0.5, V_max: 100.0, V_min: -100.0, T_2: 2.1, T_3: 7.0, D_t: 0.0},
+    lc:  {K_i: 0.01, p_c_lc: 0.2052}
+  },
+  // G15 — Area 5 equivalent
+  {bus: "15", name: "G15", type: "genroe",
+    S_n: 8700e6, F_n: 60, H: 3.4483, D: 0, R_a: 0.0,
+    X_d: 1.566, X_q: 1.5051, X1d: 0.248, X1q: 0.33, T1d0: 4.1, T1q0: 1.5,
+    X2d: 0.2001, X2q: 0.2001, T2d0: 0.05, T2q0: 0.035,
+    S_10: 0.001, S_12: 0.01,
+    K_sec: 0, K_delta: 0,
+    gov: {type: "tgov1", R: 0.05, T_1: 0.5, V_max: 100.0, V_min: -100.0, T_2: 2.1, T_3: 7.0, D_t: 0.0},
+    lc:  {K_i: 0.01, p_c_lc: 0.1149}
+  },
+  // G16 — slack (Area 5 equivalent).  Reference machine: K_delta>0, Delta_ref=0.
+  {bus: "16", name: "G16", type: "genroe",
+    S_n: 8000e6, F_n: 60, H: 5.625, D: 0, R_a: 0.0,
+    X_d: 1.424, X_q: 1.336, X1d: 0.284, X1q: 0.38, T1d0: 7.8, T1q0: 1.5,
+    X2d: 0.22, X2q: 0.22, T2d0: 0.05, T2q0: 0.035,
+    S_10: 0.001, S_12: 0.01,
+    K_sec: 0, K_delta: 0.001, Delta_ref: 0,
+    gov: {type: "tgov1", R: 0.05, T_1: 0.5, V_max: 100.0, V_min: -100.0, T_2: 2.1, T_3: 7.0, D_t: 0.0, p_c: 0.4224}
+  }
+]
+
+// ── VALIDATION RESULTS (PESTR18 §5.6, verbatim) ────────────────────────────
+results: {
+
+  // PESTR18 Tables 5.43 + 5.44 — Bus voltage magnitudes and angles.
+  buses: [
+    {name: "01", V_pu: 1.0450, theta_deg:  -8.9521},
+    {name: "02", V_pu: 0.9800, theta_deg:  -0.9796},
+    {name: "03", V_pu: 0.9830, theta_deg:   1.6167},
+    {name: "04", V_pu: 0.9970, theta_deg:   1.6725},
+    {name: "05", V_pu: 1.0110, theta_deg:  -0.6235},
+    {name: "06", V_pu: 1.0500, theta_deg:   3.8466},
+    {name: "07", V_pu: 1.0630, theta_deg:   6.0348},
+    {name: "08", V_pu: 1.0300, theta_deg:  -2.8368},
+    {name: "09", V_pu: 1.0250, theta_deg:   2.6566},
+    {name: "10", V_pu: 1.0100, theta_deg:  -9.6400},
+    {name: "11", V_pu: 1.0000, theta_deg:  -7.2206},
+    {name: "12", V_pu: 1.0156, theta_deg: -22.6264},
+    {name: "13", V_pu: 1.0110, theta_deg: -28.6487},
+    {name: "14", V_pu: 1.0000, theta_deg:  10.9625},
+    {name: "15", V_pu: 1.0000, theta_deg:   0.0172},
+    {name: "16", V_pu: 1.0000, theta_deg:   0.0000},
+    {name: "17", V_pu: 0.9499, theta_deg: -36.0217},
+    {name: "18", V_pu: 1.0023, theta_deg:  -5.8053},
+    {name: "19", V_pu: 0.9320, theta_deg:  -4.2592},
+    {name: "20", V_pu: 0.9806, theta_deg:  -5.8703},
+    {name: "21", V_pu: 0.9603, theta_deg:  -7.0498},
+    {name: "22", V_pu: 0.9937, theta_deg:  -1.7969},
+    {name: "23", V_pu: 0.9961, theta_deg:  -2.1565},
+    {name: "24", V_pu: 0.9587, theta_deg:  -9.8725},
+    {name: "25", V_pu: 0.9981, theta_deg:  -9.9953},
+    {name: "26", V_pu: 0.9869, theta_deg: -11.0152},
+    {name: "27", V_pu: 0.9679, theta_deg: -12.8529},
+    {name: "28", V_pu: 0.9897, theta_deg:  -7.4925},
+    {name: "29", V_pu: 0.9921, theta_deg:  -4.5422},
+    {name: "30", V_pu: 0.9762, theta_deg: -19.7057},
+    {name: "31", V_pu: 0.9838, theta_deg: -17.4600},
+    {name: "32", V_pu: 0.9699, theta_deg: -15.2335},
+    {name: "33", V_pu: 0.9738, theta_deg: -19.7540},
+    {name: "34", V_pu: 0.9801, theta_deg: -26.1115},
+    {name: "35", V_pu: 1.0431, theta_deg: -27.0843},
+    {name: "36", V_pu: 0.9607, theta_deg: -28.8224},
+    {name: "37", V_pu: 0.9555, theta_deg: -11.7838},
+    {name: "38", V_pu: 0.9890, theta_deg: -18.7555},
+    {name: "39", V_pu: 0.9916, theta_deg: -39.2852},
+    {name: "40", V_pu: 1.0443, theta_deg: -13.6368},
+    {name: "41", V_pu: 0.9997, theta_deg:   9.4277},
+    {name: "42", V_pu: 0.9990, theta_deg:  -0.8432},
+    {name: "43", V_pu: 0.9765, theta_deg: -37.9036},
+    {name: "44", V_pu: 0.9775, theta_deg: -37.9812},
+    {name: "45", V_pu: 1.0471, theta_deg: -29.3591},
+    {name: "46", V_pu: 0.9903, theta_deg: -20.5281},
+    {name: "47", V_pu: 1.0184, theta_deg: -19.4936},
+    {name: "48", V_pu: 1.0338, theta_deg: -18.3724},
+    {name: "49", V_pu: 0.9936, theta_deg: -19.8169},
+    {name: "50", V_pu: 1.0603, theta_deg: -19.0506},
+    {name: "51", V_pu: 1.0634, theta_deg: -27.2854},
+    {name: "52", V_pu: 0.9545, theta_deg: -12.8292},
+    {name: "53", V_pu: 0.9864, theta_deg: -18.9331},
+    {name: "54", V_pu: 0.9857, theta_deg: -11.5328},
+    {name: "55", V_pu: 0.9571, theta_deg: -13.2137},
+    {name: "56", V_pu: 0.9209, theta_deg: -11.9551},
+    {name: "57", V_pu: 0.9102, theta_deg: -11.2088},
+    {name: "58", V_pu: 0.9090, theta_deg: -10.3982},
+    {name: "59", V_pu: 0.9038, theta_deg: -13.3067},
+    {name: "60", V_pu: 0.9062, theta_deg: -14.0326},
+    {name: "61", V_pu: 0.9557, theta_deg: -23.2176},
+    {name: "62", V_pu: 0.9122, theta_deg:  -7.3078},
+    {name: "63", V_pu: 0.9097, theta_deg:  -8.3660},
+    {name: "64", V_pu: 0.8367, theta_deg:  -8.3731},
+    {name: "65", V_pu: 0.9128, theta_deg:  -8.1807},
+    {name: "66", V_pu: 0.9194, theta_deg: -10.1869},
+    {name: "67", V_pu: 0.9280, theta_deg: -11.4256},
+    {name: "68", V_pu: 0.9483, theta_deg: -10.0671}
+  ],
+
+  // PESTR18 Table 5.49 — Generator dispatch (16 machines, G16 slack).
+  syns: [
+    {bus: "01", name: "G01", P_MW:  250.0, Q_Mvar: 196.0},
+    {bus: "02", name: "G02", P_MW:  545.0, Q_Mvar:  70.0},
+    {bus: "03", name: "G03", P_MW:  650.0, Q_Mvar:  80.8},
+    {bus: "04", name: "G04", P_MW:  632.0, Q_Mvar:   0.3},
+    {bus: "05", name: "G05", P_MW:  505.0, Q_Mvar: 116.6},
+    {bus: "06", name: "G06", P_MW:  700.0, Q_Mvar: 254.5},
+    {bus: "07", name: "G07", P_MW:  560.0, Q_Mvar: 290.8},
+    {bus: "08", name: "G08", P_MW:  540.0, Q_Mvar:  49.1},
+    {bus: "09", name: "G09", P_MW:  800.0, Q_Mvar:  59.8},
+    {bus: "10", name: "G10", P_MW:  500.0, Q_Mvar: -13.2},
+    {bus: "11", name: "G11", P_MW: 1000.0, Q_Mvar:   8.3},
+    {bus: "12", name: "G12", P_MW: 1350.0, Q_Mvar: 280.0},
+    {bus: "13", name: "G13", P_MW: 3591.0, Q_Mvar: 884.9},
+    {bus: "14", name: "G14", P_MW: 1785.0, Q_Mvar:  47.4},
+    {bus: "15", name: "G15", P_MW: 1000.0, Q_Mvar:  76.7},
+    {bus: "16", name: "G16", P_MW: 3379.5, Q_Mvar:  93.5}
+  ],
+
+  sources: [],
+
+  // PESTR18 §5.6.3 only documents eigenvalues *graphically* (Figures 5.79-5.81)
+  // — no numerical reference table is published for the 68-bus system.
+  // Qualitative results from §5.6.3:
+  //   • No PSS (Case 1):         3 unstable modes + 9 poorly damped (ζ < 5%).
+  //   • PSS on G9 only (Case 2): most modes stabilised, one inter-area mode
+  //                              still unstable, several still poorly damped.
+  //   • PSS on G1-G12 (Case 3 — DEFAULT here): all "local" modes well damped,
+  //                              2 inter-area modes still under-damped (areas
+  //                              3-5 lack PSSs).
+  //
+  // pydae result (Case 3 default) — selected electromechanical modes:
+  //   Mode (driving states)            real ± imag (1/s)    f (Hz)    ζ
+  //   G14↔G16 inter-area               −0.257 ± j3.774       0.601    0.068  ← under-damped
+  //   G15 inter-area                   −0.254 ± j5.169       0.823    0.049  ← under-damped
+  //   G12 local                        −0.547 ± j6.359       1.012    0.086
+  //   G02 local                        −0.597 ± j7.481       1.191    0.080
+  //   G10 local                        −0.798 ± j7.349       1.170    0.108
+  //   G01 local                        −0.768 ± j7.876       1.254    0.097
+  //   G11 local                        −1.221 ± j10.35       1.647    0.117
+  // Two inter-area modes remain under-damped because G13-G16 equivalents
+  // have no PSS — exactly the PESTR18 Case 3 expected outcome.
+  eigenvalues: []
+}
+
+}
