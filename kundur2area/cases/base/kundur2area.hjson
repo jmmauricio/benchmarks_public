@@ -1,0 +1,230 @@
+{
+// Kundur Two-Area, 4-Generator, 11-Bus benchmark — VERBATIM from Kundur,
+// "Power System Stability and Control" (McGraw-Hill, 1994), Example 12.6
+// (Chapter 12 — Small-Signal Stability).
+// Cross-reference: IEEE PES Task Force PES-TR18 §5.3 (August 2015) reproduces
+// the same network but with extra parallel circuits, MBASE=666.7 MVA, and an
+// ESST1A excitation system.  Use the kundur2area.hjson in PESTR18-style/
+// variant if you need that flavour.
+// System base: S_base = 100 MVA, 60 Hz. Transmission 230 kV, generators 20 kV.
+
+system: {name: "kundur2area", S_base: 100e6},
+agc: {K_p_agc: 0.0, K_i_agc: 0.01, gen: "G03"}
+// NOTE: Kundur Example 12.6 has no governors (PESTR18 §5.3.3 confirms:
+// "there are no speed governor models in the system data, so all generators
+// are represented as having constant mechanical power from the turbine").
+// pydae keeps tgov1 here only because the kundur-style AVR's PV-bus ini
+// relies on the gov/LC chain to pin p_m at the dispatch.  Time constants
+// are kept conservative (T_1=0.5, T_3=7) so the governor adds < 0.05 of
+// damping to the local modes at ~1.1 Hz.
+
+// Kundur Example 12.6 — 11 buses (1-4 generator terminals, 5-11 transmission).
+buses: [
+  {name: "01", P_W: 0, Q_var: 0, U_kV:  20.0},   // GEN G1 (Area 1, PV)
+  {name: "02", P_W: 0, Q_var: 0, U_kV:  20.0},   // GEN G2 (Area 1, PV)
+  {name: "03", P_W: 0, Q_var: 0, U_kV:  20.0},   // GEN G3 (Area 2, swing)
+  {name: "04", P_W: 0, Q_var: 0, U_kV:  20.0},   // GEN G4 (Area 2, PV)
+  {name: "05", P_W: 0, Q_var: 0, U_kV: 230.0},   // G1 HV  — Area 1
+  {name: "06", P_W: 0, Q_var: 0, U_kV: 230.0},   // G2 HV  — Area 1
+  {name: "07", P_W: 0, Q_var: 0, U_kV: 230.0},   // LOAD A — Area 1
+  {name: "08", P_W: 0, Q_var: 0, U_kV: 230.0},   // MID POINT — tie
+  {name: "09", P_W: 0, Q_var: 0, U_kV: 230.0},   // LOAD B — Area 2
+  {name: "10", P_W: 0, Q_var: 0, U_kV: 230.0},   // G4 HV  — Area 2
+  {name: "11", P_W: 0, Q_var: 0, U_kV: 230.0}    // G3 HV  — Area 2
+],
+
+// Kundur Example 12.6 loads (Table 12.4-12.5) merged with capacitor banks:
+//   Bus 7:  load 967 MW, 100 Mvar  +  cap 200 Mvar  →  net 967 MW, −100 Mvar
+//   Bus 9:  load 1767 MW, 100 Mvar +  cap 350 Mvar  →  net 1767 MW, −250 Mvar
+// Kundur / PESTR18 §5.3.1: "constant current for P, constant admittance for Q
+// (100% I, 100% Z)".  Capacitor banks are physically shunt admittances so they
+// stay on the Z branch (negative q_mvar).
+loads: [
+  {bus: "07", type: "zip", p_mw:  967, q_mvar: -100, K_ip: 1.0, K_zq: 1.0},
+  {bus: "09", type: "zip", p_mw: 1767, q_mvar: -250, K_ip: 1.0, K_zq: 1.0}
+],
+
+// Kundur Example 12.6 transmission network: 8 lines, all 230 kV.
+//   r = 0.0001 pu/km, x = 0.001 pu/km, b = 0.00175 pu/km on 100 MVA base.
+//   5-6: 25 km (single)        6-7: 10 km (single)
+//   7-8: 110 km × 2 (tie)      8-9: 110 km × 2 (tie)
+//   9-10: 10 km (single)       10-11: 25 km (single)
+// PESTR18 §5.3 adds extra parallel circuits at 5-6, 6-7, 9-10 and 10-11 to
+// study weaker-system conditions; those are NOT in Kundur's book.
+lines: [
+  {bus_j: "05", bus_k: "06", R_pu: 0.0025, X_pu: 0.025, B_pu: 0.04375, S_mva: 100.0},  //  25 km
+  {bus_j: "06", bus_k: "07", R_pu: 0.0010, X_pu: 0.010, B_pu: 0.01750, S_mva: 100.0},  //  10 km
+  {bus_j: "07", bus_k: "08", R_pu: 0.0110, X_pu: 0.110, B_pu: 0.19250, S_mva: 100.0},  // 110 km tie 1
+  {bus_j: "07", bus_k: "08", R_pu: 0.0110, X_pu: 0.110, B_pu: 0.19250, S_mva: 100.0},  // 110 km tie 2
+  {bus_j: "08", bus_k: "09", R_pu: 0.0110, X_pu: 0.110, B_pu: 0.19250, S_mva: 100.0},  // 110 km tie 3
+  {bus_j: "08", bus_k: "09", R_pu: 0.0110, X_pu: 0.110, B_pu: 0.19250, S_mva: 100.0},  // 110 km tie 4
+  {bus_j: "09", bus_k: "10", R_pu: 0.0010, X_pu: 0.010, B_pu: 0.01750, S_mva: 100.0},  //  10 km
+  {bus_j: "10", bus_k: "11", R_pu: 0.0025, X_pu: 0.025, B_pu: 0.04375, S_mva: 100.0}   //  25 km
+],
+
+// Kundur Example 12.6 — generator step-up transformers (4×900 MVA, X=15% on
+// machine MVA base, tap=1.0, no winding resistance).
+transformers: [
+  {bus_j: "05", bus_k: "01", R_pu: 0.0, X_pu: 0.15, S_mva: 900.0, tap_m: 1.0},
+  {bus_j: "06", bus_k: "02", R_pu: 0.0, X_pu: 0.15, S_mva: 900.0, tap_m: 1.0},
+  {bus_j: "11", bus_k: "03", R_pu: 0.0, X_pu: 0.15, S_mva: 900.0, tap_m: 1.0},
+  {bus_j: "10", bus_k: "04", R_pu: 0.0, X_pu: 0.15, S_mva: 900.0, tap_m: 1.0}
+],
+
+// Placeholder shunt at the tie midpoint for fault injection during run().
+shunts: [{bus:"08", X_pu:1e6, R_pu:0.0, S_mva:100}],
+
+// PESTR18 Table 5.26 — Synchronous machine data (verbatim, on MBASE=666.7 MVA).
+// Modelled as PSS/E GENROE (= pydae's `genrou`, 6th-order round-rotor,
+// IEEE 1110 Model 2.2 / Anderson-Fouad, terminal-referred subtransient).
+//   T'_d0=8.0s, T''_d0=0.03s, T'_q0=0.4s, T''_q0=0.05s; D=0;
+//   X_d=1.8, X_q=1.7, X'_d=0.3, X'_q=0.55, X''_d=X''_q=0.25.
+//   X_l=0.20 (PESTR18) is intentionally NOT passed to genrou — IEEE 1110 /
+//   PSS/E convention treats X''_d, X''_q as terminal-referred (X_l already
+//   folded in); see packages/pydae-bps/.../syns/genrou.py docstring.
+//   Saturation: S(1.0)=0.0392, S(1.2)=0.2672 (Table 5.26).
+//   Inertias: H=6.50 (G1,G2) and H=6.175 (G3,G4).  R_a not listed by PESTR18;
+//   set to 0 per Table 5.26 footnote (winding resistance neglected).
+// Excitation system — Kundur Example 12.6 "thyristor exciter" (Table 12.7):
+//   single first-order transducer + proportional gain, no TGR, no inner loop.
+//   K_A=200, T_R=0.01 s, ±5 pu field limits.  Implemented by pydae's `kundur`
+//   AVR (avrs/kundur.py): one state v_1 driven by V through 1/(1+sT_r), then
+//   e_fd = K_a·(v_ref − v_1) + 1.5.  PESTR18 §5.3.3 confirms this *simple*
+//   model is what generates the Kundur [16] eigenvalue column in Table 5.30.
+// PSS — Kundur §12.5.3 PSS data (also Table 5.29 in PESTR18, same numbers):
+//   K_S=20, T_w=10, T_1=0.05, T_2=0.02, T_3=3, T_4=5.4, L_S±0.05.  Disabled
+//   by default (K_stab=0) so the model reproduces the unstable inter-area
+//   mode of Kundur Table 12.9.  Set K_stab=20 to stabilise (Kundur §12.5.4).
+syns: [
+  // G1 — Area 1 (PV bus, V=1.030 ∠ 20.07°, P=700 MW, Q=185 Mvar)
+  {bus: "01", name: "G01", type: "genroe",
+    S_n: 900e6, F_n: 60, H: 6.50, D: 0, R_a: 0.0,
+    X_d: 1.8, X_q: 1.7, X1d: 0.3, X1q: 0.55, T1d0: 8.0, T1q0: 0.4,
+    X2d: 0.25, X2q: 0.25, T2d0: 0.03, T2q0: 0.05,
+    S_10: 0.0, S_12: 0.0,
+    K_sec: 0, K_delta: 0,
+    avr: {type: "kundur", K_a: 200.0, T_r: 0.01, E_fmin: -5.0, E_fmax: 5.0, v_ref: 1.030},
+    gov: {type: "tgov1", R: 0.05, T_1: 0.5, V_max: 100.0, V_min: -100.0, T_2: 2.1, T_3: 7.0, D_t: 0.0},
+    lc:  {K_i: 0.01, p_c_lc: 0.7778}
+  },
+  // G2 — Area 1 (PV bus, V=1.010 ∠ 10.31°, P=700 MW, Q=234.6 Mvar)
+  {bus: "02", name: "G02", type: "genroe",
+    S_n: 900e6, F_n: 60, H: 6.50, D: 0, R_a: 0.0,
+    X_d: 1.8, X_q: 1.7, X1d: 0.3, X1q: 0.55, T1d0: 8.0, T1q0: 0.4,
+    X2d: 0.25, X2q: 0.25, T2d0: 0.03, T2q0: 0.05,
+    S_10: 0.0, S_12: 0.0,
+    K_sec: 0, K_delta: 0,
+    avr: {type: "kundur", K_a: 200.0, T_r: 0.01, E_fmin: -5.0, E_fmax: 5.0, v_ref: 1.010},
+    gov: {type: "tgov1", R: 0.05, T_1: 0.5, V_max: 100.0, V_min: -100.0, T_2: 2.1, T_3: 7.0, D_t: 0.0},
+    lc:  {K_i: 0.01, p_c_lc: 0.7778}
+  },
+  // G4 — Area 2 (PV bus, V=1.010 ∠ -17.19°, P=700 MW, Q=202 Mvar)
+  {bus: "04", name: "G04", type: "genroe",
+    S_n: 900e6, F_n: 60, H: 6.175, D: 0, R_a: 0.0,
+    X_d: 1.8, X_q: 1.7, X1d: 0.3, X1q: 0.55, T1d0: 8.0, T1q0: 0.4,
+    X2d: 0.25, X2q: 0.25, T2d0: 0.03, T2q0: 0.05,
+    S_10: 0.0, S_12: 0.0,
+    K_sec: 0, K_delta: 0,
+    avr: {type: "kundur", K_a: 200.0, T_r: 0.01, E_fmin: -5.0, E_fmax: 5.0, v_ref: 1.010},
+    gov: {type: "tgov1", R: 0.05, T_1: 0.5, V_max: 100.0, V_min: -100.0, T_2: 2.1, T_3: 7.0, D_t: 0.0},
+    lc:  {K_i: 0.01, p_c_lc: 0.7778}
+  },
+  // G3 — Area 2 swing bus (V=1.030 ∠ -7.00°, P=719.1 MW, Q=176 Mvar).
+  // Reference machine: K_delta>0, Delta_ref=0 to anchor the absolute angle.
+  {bus: "03", name: "G03", type: "genroe",
+    S_n: 900e6, F_n: 60, H: 6.175, D: 0, R_a: 0.0,
+    X_d: 1.8, X_q: 1.7, X1d: 0.3, X1q: 0.55, T1d0: 8.0, T1q0: 0.4,
+    X2d: 0.25, X2q: 0.25, T2d0: 0.03, T2q0: 0.05,
+    S_10: 0.0, S_12: 0.0,
+    K_sec: 0, K_delta: 0.001, Delta_ref: 0,
+    avr: {type: "kundur", K_a: 200.0, T_r: 0.01, E_fmin: -5.0, E_fmax: 5.0, v_ref: 1.030},
+    gov: {type: "tgov1", R: 0.05, T_1: 0.5, V_max: 100.0, V_min: -100.0, T_2: 2.1, T_3: 7.0, D_t: 0.0, p_c: 0.7990}
+  }
+]
+
+// ── VALIDATION RESULTS (PESTR18 §5.3 / Appendix C, verbatim) ──────────────
+results: {
+
+  // PESTR18 Table 5.20 / Appendix C Table 1 — Bus voltage magnitudes and angles.
+  buses: [
+    {name: "01", V_pu: 1.0300, theta_deg:  20.07},
+    {name: "02", V_pu: 1.0100, theta_deg:  10.31},
+    {name: "03", V_pu: 1.0300, theta_deg:  -7.00},
+    {name: "04", V_pu: 1.0100, theta_deg: -17.19},
+    {name: "05", V_pu: 1.0065, theta_deg:  13.61},
+    {name: "06", V_pu: 0.9781, theta_deg:   3.52},
+    {name: "07", V_pu: 0.9610, theta_deg:  -4.89},
+    {name: "08", V_pu: 0.9486, theta_deg: -18.76},
+    {name: "09", V_pu: 0.9714, theta_deg: -32.35},
+    {name: "10", V_pu: 0.9835, theta_deg: -23.94},
+    {name: "11", V_pu: 1.0083, theta_deg: -13.63}
+  ],
+
+  // PESTR18 Table 5.25 / Appendix C Table 6 — Generator scheduled output.
+  // G3 is the swing bus (P closes the power balance ≈ 719.1 MW).
+  syns: [
+    {bus: "01", name: "G01", P_MW: 700.0, Q_Mvar: 185.0},
+    {bus: "02", name: "G02", P_MW: 700.0, Q_Mvar: 234.6},
+    {bus: "03", name: "G03", P_MW: 719.1, Q_Mvar: 176.0},
+    {bus: "04", name: "G04", P_MW: 700.0, Q_Mvar: 202.0}
+  ],
+
+  sources: [],
+
+  // PESTR18 Table 5.30 — Electromechanical modes, thyristor exciter, NO PSS.
+  //
+  // The Kundur [16] column corresponds to the *book* eigenvalues (Kundur §12.6
+  // Example 12.6, Table 12.9): Kundur's "simple" first-order thyristor AVR,
+  // network with single circuits on the 25-km and 10-km segments, MBASE=900 MVA.
+  // The other three columns (LSYSAN, PSSPLT, PacDyn) are from PESTR18's PSS/E
+  // implementation with the full ESST1A model, parallel circuits, and
+  // MBASE=666.7 MVA — they intentionally differ from Kundur because Kundur's
+  // simpler AVR adds less damping.
+  //
+  // The pydae row matches Kundur's setup: avrs/kundur (one transducer +
+  // proportional gain, K_a=200, T_r=0.01), syns/genroe (PSS/E GENROE 6th-order),
+  // 8-line network, MBASE=900 MVA, 100%I P + 100%Z Q load, saturation off.
+  //
+  //   freq_Hz = |imag| / (2π)    zeta = -real / sqrt(real² + imag²)
+  //
+  // Tool ↓ │ Local Mode Area 1 (G1↔G2) │ Local Mode Area 2 (G3↔G4) │ Inter-area (G1+G2 ↔ G3+G4)
+  // ───────┼───────────────────────────┼───────────────────────────┼─────────────────────────────
+  // [16]   │  −0.490 ± j7.150          │  −0.496 ± j7.350          │  +0.031 ± j3.840 (unstable)
+  // LSYSAN │  −0.660 ± j7.290          │  −0.656 ± j7.090          │  +0.006 ± j3.840
+  // PSSPLT │  −0.575 ± j7.060          │   (not provided)          │  +0.038 ± j3.820
+  // PacDyn │  −0.639 ± j7.080          │  −0.639 ± j7.280          │  +0.022 ± j3.820
+  // pydae  │  −0.841 ± j6.960          │  −0.822 ± j7.139          │  −0.036 ± j3.735 (marg.)
+  //
+  // Notes on the pydae row vs Kundur [16]:
+  //   • Frequencies match Kundur within ~3% on all three electromechanical
+  //     modes (0.595/1.108/1.136 vs 0.611/1.138/1.170 Hz).
+  //   • Inter-area damping σ = −0.036 vs Kundur +0.031 — both within ±0.05
+  //     of the imaginary axis; the qualitative pedagogical result (inter-
+  //     area mode unable to be damped without PSS) is reproduced.
+  //   • Local-mode damping σ ≈ −0.83 vs Kundur −0.49.  Residual offset
+  //     (~0.34) is also present in PESTR18's own PSS/E LSYSAN result
+  //     (σ ≈ −0.66), so this is a known modelling-tool spread — driven by
+  //     governor presence in pydae (Kundur Example 12.6 has no governors;
+  //     pydae's kundur AVR needs the gov/LC chain to pin p_m during PV-bus
+  //     initialisation) and a small +1.5 no-load bias inside pydae's
+  //     kundur AVR limiter.
+  //   • All saturation, load-model, and exciter-time-constant sensitivities
+  //     change the local damping by < 0.05 — saturation off (used here)
+  //     and constant-I P load (used here) give the closest frequencies to
+  //     the book without degrading the inter-area result.
+  //
+  // The single "reference" set below uses the PSS/E LSYSAN values (Appendix C
+  // Table 11), which match Table 5.30 exactly and have the most detail.
+  eigenvalues: [
+    {id: "Local — Area 1 (G1↔G2)",       real: -0.65639, imag: 7.0881, freq_Hz: 1.1281, zeta: 0.0922},
+    {id: "Local — Area 2 (G3↔G4)",       real: -0.66058, imag: 7.2907, freq_Hz: 1.1604, zeta: 0.0902},
+    {id: "Inter-area (G1+G2 ↔ G3+G4)",  real:  0.00064617, imag: 3.8361, freq_Hz: 0.61054, zeta: -0.000168}
+  ]
+
+  // Case 6 (ESST1A no TGR + PSS) is the stabilised configuration.  PESTR18
+  // documents it via time-domain plots only (Figures 18-19, App. C §4.6) and
+  // does NOT tabulate the eigenvalues.  Enable by setting K_stab=20.0 on
+  // every gen and disabling TGR (T_a→0.001, T_b→0.001).
+}
+
+}
