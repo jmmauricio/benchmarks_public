@@ -1,8 +1,9 @@
 """
 NTS base case — CasADi pipeline.
 
-    python main.py     # ini: load flow + report + validation + small-signal
-                       # run: v_ref_4 step-change response
+    python main.py     # ini:   load flow + report + validation + small-signal
+                       # run:   v_ref_4 step-change response
+                       # sweep: bus 2-3 X_L sweep, overlay NTS Figura 18
 """
 import time
 
@@ -88,6 +89,57 @@ def run():
     return model
 
 
+def sweep():
+    # X_L sweep on the bus 2-3 line. For each value we re-initialize the model
+    # and pick the dominant electromechanical mode (max participation on
+    # delta_1, narrowed to 0.1-1.2 Hz). The locus is then overlaid with the
+    # NTS Figura 18 read-off stored in the HJSON.
+    model = CasadiModel(build())
+    model.decimation = 10
+
+    nts_ref = read_data(DATA)['results']['eigenvalues_XL_sweep_nts_fig18']
+    X_L_values = [entry['X_L'] for entry in nts_ref]
+
+    pydae_eigs = []
+    for X_L in X_L_values:
+        change_line(model, {"bus_j": "2", "bus_k": "3",
+                            "X_pu": X_L, "R_pu": 0.0, "Bs_pu": 0.0, "S_mva": 100})
+        model.ini({}, XY_0)
+        ssa.eig(model)                                            # populates model.eigenvalues
+        _, lam = ssa.get_mode(model, f_min=0.1, f_max=1.2, report=False)
+        pydae_eigs.append(lam)
+        print(f"X_L = {X_L:.2f}  →  λ = {lam.real:+.4f} {lam.imag:+.4f}j  "
+              f"(f = {abs(lam.imag)/(2*np.pi):.3f} Hz, "
+              f"ζ = {-lam.real/abs(lam)*100:.2f}%)")
+
+    pydae_eigs = np.array(pydae_eigs)
+    nts_eigs   = np.array([complex(e['real'], e['imag']) for e in nts_ref])
+
+    # Plot the locus on the complex S-plane: damping zones (green/orange/red)
+    # are added by ssa.plot_eig; pydae as blue 'o', NTS Figura 18 as red 'x'.
+    fig = ssa.plot_eig(pydae_eigs, x_min=-2.2, x_max=0.1, y_min=0.0, y_max=1.1,
+                       fig='', mark='o', color='blue', label='')
+    ssa.plot_eig(nts_eigs, x_min=-2.2, x_max=0.1, y_min=0.0, y_max=1.1,
+                 fig=fig, mark='x', color='red', label='')
+
+    ax = fig.axes[0]
+    # Connect the points along the sweep direction so the trajectory is clear.
+    ax.plot(pydae_eigs.real, pydae_eigs.imag / (2 * np.pi), '-',
+            color='blue', alpha=0.4)
+    ax.plot(nts_eigs.real, nts_eigs.imag / (2 * np.pi), '--',
+            color='red', alpha=0.4)
+    # Proxy artists so the legend shows the combined marker + line style.
+    ax.plot([], [], 'o-',  color='blue', label='pydae (genrou)')
+    ax.plot([], [], 'x--', color='red',  label='NTS Figura 18')
+    ax.legend(loc='upper left')
+    ax.set_title('Bus 2-3 line $X_L$ sweep — dominant electromechanical mode')
+
+    fig.savefig('nts_base_eig_sweep.png', dpi=300)
+
+    return model
+
+
 if __name__ == "__main__":
-    ini()   # steady-state initialization + small-signal analysis
-    run()   # time-domain v_ref_4 step-change simulation
+    ini()    # steady-state initialization + small-signal analysis
+    run()    # time-domain v_ref_4 step-change simulation
+    sweep()  # X_L sweep, overlay with NTS Figura 18 read-off
