@@ -1,0 +1,7 @@
+# Results: eigenvalue, temperature and EV-stress plots are written by the
+# main.py in each case directory.
+*.png
+
+# Reference network diagram from the CIGRE task-force report, not ours to
+# redistribute.
+cigre_network_mv_der_all.png

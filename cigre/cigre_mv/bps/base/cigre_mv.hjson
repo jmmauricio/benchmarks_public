@@ -1,0 +1,112 @@
+{
+// ════════════════════════════════════════════════════════════════════════
+//  CIGRE MV benchmark — European MV distribution network (14-bus radial)
+//  Translated from cigre_mv.json. Bus loads moved into the `loads:` section
+//  (ZIP, constant-power) following the new pydae convention.
+// ════════════════════════════════════════════════════════════════════════
+
+system: {name: "cigre_mv", S_base: 25e6, K_xif: 0.01}
+
+// B00 = 110 kV HV grid connection; B01..B14 = 20 kV MV feeders
+buses: [
+  {name: "B00", P_W: 0, Q_var: 0, U_kV: 110.0, monitor: true},
+  {name: "B01", P_W: 0, Q_var: 0, U_kV:  20.0, monitor: true},
+  {name: "B02", P_W: 0, Q_var: 0, U_kV:  20.0, monitor: true},
+  {name: "B03", P_W: 0, Q_var: 0, U_kV:  20.0, monitor: true},
+  {name: "B04", P_W: 0, Q_var: 0, U_kV:  20.0, monitor: true},
+  {name: "B05", P_W: 0, Q_var: 0, U_kV:  20.0, monitor: true},
+  {name: "B06", P_W: 0, Q_var: 0, U_kV:  20.0, monitor: true},
+  {name: "B07", P_W: 0, Q_var: 0, U_kV:  20.0, monitor: true},
+  {name: "B08", P_W: 0, Q_var: 0, U_kV:  20.0, monitor: true},
+  {name: "B09", P_W: 0, Q_var: 0, U_kV:  20.0, monitor: true},
+  {name: "B10", P_W: 0, Q_var: 0, U_kV:  20.0, monitor: true},
+  {name: "B11", P_W: 0, Q_var: 0, U_kV:  20.0, monitor: true},
+  {name: "B12", P_W: 0, Q_var: 0, U_kV:  20.0, monitor: true},
+  {name: "B13", P_W: 0, Q_var: 0, U_kV:  20.0, monitor: true},
+  {name: "B14", P_W: 0, Q_var: 0, U_kV:  20.0, monitor: true}
+]
+
+// MV feeder loads (from the original bus P_W/Q_var, W/var → MW/Mvar)
+// Buses B00, B01, B02, B07 carry no load and are omitted.
+loads: [
+  {bus: "B03", type: "zip", p_mw: 0.285, q_mvar: 0.2,   K_zp: 1.0, K_zq: 1.0},
+  {bus: "B04", type: "zip", p_mw: 0.445, q_mvar: 0.11,  K_zp: 1.0, K_zq: 1.0},
+  {bus: "B05", type: "zip", p_mw: 0.75,  q_mvar: 0.566, K_zp: 1.0, K_zq: 1.0},
+  {bus: "B06", type: "zip", p_mw: 0.565, q_mvar: 0.154, K_zp: 1.0, K_zq: 1.0},
+  {bus: "B08", type: "zip", p_mw: 0.605, q_mvar: 0.285, K_zp: 1.0, K_zq: 1.0},
+  {bus: "B09", type: "zip", p_mw: 0.575, q_mvar: 0.221, K_zp: 1.0, K_zq: 1.0},
+  {bus: "B10", type: "zip", p_mw: 0.49,  q_mvar: 0.196, K_zp: 1.0, K_zq: 1.0},
+  {bus: "B11", type: "zip", p_mw: 0.34,  q_mvar: 0.236, K_zp: 1.0, K_zq: 1.0},
+  {bus: "B12", type: "zip", p_mw: 1.53,  q_mvar: 1.1,   K_zp: 1.0, K_zq: 1.0},
+  {bus: "B13", type: "zip", p_mw: 0.085, q_mvar: 0.04,  K_zp: 1.0, K_zq: 1.0},
+  {bus: "B14", type: "zip", p_mw: 0.215, q_mvar: 0.084, K_zp: 1.0, K_zq: 1.0}
+]
+
+// Radial base case (CIGRE-575 §9.2.4): switches S1/S2/S3 open → segments
+// 6→7 and 11→4 are open and segment 3→8 is closed, so B08 is fed from B03 and
+// B06/B07/B11 are feeder ends. Lengths/IDs per Table 6.12. B13→B14 is the OHL
+// segment; all other cables are NA2XS2Y (R'=0.501, X'=0.716 Ω/km).
+lines: [
+  // ── Feeder 1: underground XLPE cable NA2XS2Y ──
+  {bus_j: "B01", bus_k: "B02", R_km: 0.501, X_km: 0.716, Bs_km: 4.712e-5, km: 2.82, monitor: true},
+  {bus_j: "B02", bus_k: "B03", R_km: 0.501, X_km: 0.716, Bs_km: 4.712e-5, km: 4.42, monitor: true},
+  {bus_j: "B03", bus_k: "B04", R_km: 0.501, X_km: 0.716, Bs_km: 4.712e-5, km: 0.61, monitor: true},
+  {bus_j: "B04", bus_k: "B05", R_km: 0.501, X_km: 0.716, Bs_km: 4.712e-5, km: 0.56, monitor: true},
+  {bus_j: "B05", bus_k: "B06", R_km: 0.501, X_km: 0.716, Bs_km: 4.712e-5, km: 1.54, monitor: true},   // B06 feeder end
+  {bus_j: "B03", bus_k: "B08", R_km: 0.501, X_km: 0.716, Bs_km: 4.712e-5, km: 1.30, monitor: true},   // segment 12 (closed)
+  {bus_j: "B07", bus_k: "B08", R_km: 0.501, X_km: 0.716, Bs_km: 4.712e-5, km: 1.67, monitor: true},   // B07 feeder end (fed from B08)
+  {bus_j: "B08", bus_k: "B09", R_km: 0.501, X_km: 0.716, Bs_km: 4.712e-5, km: 0.32, monitor: true},
+  {bus_j: "B09", bus_k: "B10", R_km: 0.501, X_km: 0.716, Bs_km: 4.712e-5, km: 0.77, monitor: true},
+  {bus_j: "B10", bus_k: "B11", R_km: 0.501, X_km: 0.716, Bs_km: 4.712e-5, km: 0.33, monitor: true},   // B11 feeder end
+  // ── Feeder 2: overhead line A1 (fed from its own B00→B12 transformer) ──
+  {bus_j: "B12", bus_k: "B13", R_km: 0.510, X_km: 0.366, Bs_km: 3.172e-6, km: 2.99, monitor: true},
+  {bus_j: "B13", bus_k: "B14", R_km: 0.849, X_km: 0.399, Bs_km: 1.005e-5, km: 2.99, monitor: true}  // OHL segment
+]
+
+// HV/MV substation transformers: 110/20 kV, 25 MVA — one per feeder, with
+// secondary tap changers (CIGRE Table 9.7: feeder 1 +6.25 %, feeder 2 +3.125 %;
+// V_sec = V_pri/tap_m). Taps nudged ~2 % toward 1 so the balanced PF matches
+// the three-phase Table 9.6 voltages (see results: below).
+transformers: [
+  {bus_j: "B00", bus_k: "B01", S_mva: 25.0, U_j_kV: 110.0, U_k_kV: 20.0, R_pu: 0.003, X_pu: 0.12, tap_m: 0.960, monitor: true},
+  {bus_j: "B00", bus_k: "B12", S_mva: 25.0, U_j_kV: 110.0, U_k_kV: 20.0, R_pu: 0.003, X_pu: 0.12, tap_m: 0.992, monitor: true}
+]
+
+pvs: []
+
+// Slack: grid-forming equivalent (genape) at the 110 kV connection point
+sources: [
+  {type: "genape", bus: "B00", S_n: 1000e6, F_n: 50.0, X_v: 0.001, R_v: 0.0, K_delta: 0.001, K_alpha: 1e-06}
+]
+
+plls: [
+  {bus: "B01", K_p_pll: 180, K_i_pll: 3200, K_theta_pll: 1000, T_pll: 0.02}
+]
+
+emec_config: {Dt: 10e-3, Dt_low: 20e-3, Dt_mid: 40e-3}
+
+// Reference power flow — CIGRE-575 Table 9.6 (Appendix 9.2.4), base radial
+// case with tap changers. V_pu = (LL rms)/20 kV. These are the three-phase
+// per-phase results; the balanced positive-sequence model matches the
+// magnitudes within ~0.6 %. Angles are per-phase (include the Dyn1 30° shift)
+// so they are not directly comparable and are omitted. Checked by validate_all.
+results: {
+  buses: [
+    {name: "B00", V_pu: 1.000},
+    {name: "B01", V_pu: 1.026},
+    {name: "B02", V_pu: 1.005},
+    {name: "B03", V_pu: 0.972},
+    {name: "B04", V_pu: 0.970},
+    {name: "B05", V_pu: 0.969},
+    {name: "B06", V_pu: 0.968},
+    {name: "B07", V_pu: 0.967},
+    {name: "B08", V_pu: 0.967},
+    {name: "B09", V_pu: 0.966},
+    {name: "B10", V_pu: 0.965},
+    {name: "B11", V_pu: 0.965},
+    {name: "B12", V_pu: 1.002},
+    {name: "B13", V_pu: 0.997},
+    {name: "B14", V_pu: 0.994}
+  ]
+}
+}

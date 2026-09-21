@@ -1,0 +1,74 @@
+{
+"system": {
+    "name": "cigre_mv",
+    "S_base": 25.0e6,
+    "K_p_agc": 0.0,
+    "K_i_agc": 0.0,
+    "K_xif": 0.01
+},
+"buses": [
+    {"name": "B00", "P_W": 0.0,       "Q_var": 0.0,       "U_kV": 110.0, "monitor": true},
+    {"name": "B01", "P_W": 0.0,       "Q_var": 0.0,       "U_kV": 20.0,  "monitor": true},
+    {"name": "B02", "P_W": 0.0,       "Q_var": 0.0,       "U_kV": 20.0,  "monitor": true},
+    {"name": "B03", "P_W": 285000.0,  "Q_var": 200000.0,  "U_kV": 20.0,  "monitor": true},
+    {"name": "B04", "P_W": 445000.0,  "Q_var": 110000.0,  "U_kV": 20.0,  "monitor": true},
+    {"name": "B05", "P_W": 750000.0,  "Q_var": 566000.0,  "U_kV": 20.0,  "monitor": true},
+    {"name": "B06", "P_W": 565000.0,  "Q_var": 154000.0,  "U_kV": 20.0,  "monitor": true},
+    {"name": "B07", "P_W": 0.0,       "Q_var": 0.0,       "U_kV": 20.0,  "monitor": true},
+    {"name": "B08", "P_W": 605000.0,  "Q_var": 285000.0,  "U_kV": 20.0,  "monitor": true},
+    {"name": "B09", "P_W": 575000.0,  "Q_var": 221000.0,  "U_kV": 20.0,  "monitor": true},
+    {"name": "B10", "P_W": 490000.0,  "Q_var": 196000.0,  "U_kV": 20.0,  "monitor": true},
+    {"name": "B11", "P_W": 340000.0,  "Q_var": 236000.0,  "U_kV": 20.0,  "monitor": true},
+    {"name": "B12", "P_W": 1530000.0, "Q_var": 1100000.0, "U_kV": 20.0,  "monitor": true},
+    {"name": "B13", "P_W": 85000.0,   "Q_var": 40000.0,   "U_kV": 20.0,  "monitor": true},
+    {"name": "B14", "P_W": 215000.0,  "Q_var": 84000.0,   "U_kV": 20.0,  "monitor": true}
+],
+"lines": [
+    {"bus_j": "B01", "bus_k": "B02", "R_km": 0.501, "X_km": 0.716, "Bs_km": 4.712e-5, "km": 2.82, "monitor": true},
+    {"bus_j": "B02", "bus_k": "B03", "R_km": 0.501, "X_km": 0.716, "Bs_km": 4.712e-5, "km": 4.42, "monitor": true},
+    {"bus_j": "B03", "bus_k": "B04", "R_km": 0.501, "X_km": 0.716, "Bs_km": 4.712e-5, "km": 0.61, "monitor": true},
+    {"bus_j": "B04", "bus_k": "B05", "R_km": 0.501, "X_km": 0.716, "Bs_km": 4.712e-5, "km": 0.56, "monitor": true},
+    {"bus_j": "B05", "bus_k": "B06", "R_km": 0.501, "X_km": 0.716, "Bs_km": 4.712e-5, "km": 1.54, "monitor": true},
+    {"bus_j": "B06", "bus_k": "B07", "R_km": 0.501, "X_km": 0.716, "Bs_km": 4.712e-5, "km": 0.24, "monitor": true},
+    {"bus_j": "B07", "bus_k": "B08", "R_km": 0.501, "X_km": 0.716, "Bs_km": 4.712e-5, "km": 1.67, "monitor": true},
+    {"bus_j": "B08", "bus_k": "B09", "R_km": 0.501, "X_km": 0.716, "Bs_km": 4.712e-5, "km": 0.32, "monitor": true},
+    {"bus_j": "B09", "bus_k": "B10", "R_km": 0.501, "X_km": 0.716, "Bs_km": 4.712e-5, "km": 0.77, "monitor": true},
+    {"bus_j": "B10", "bus_k": "B11", "R_km": 0.501, "X_km": 0.716, "Bs_km": 4.712e-5, "km": 0.33, "monitor": true},
+    {"bus_j": "B01", "bus_k": "B12", "R_km": 0.501, "X_km": 0.716, "Bs_km": 4.712e-5, "km": 4.89, "monitor": true},
+    {"bus_j": "B12", "bus_k": "B13", "R_km": 0.501, "X_km": 0.716, "Bs_km": 4.712e-5, "km": 2.99, "monitor": true},
+    {"bus_j": "B13", "bus_k": "B14", "R_km": 0.849, "X_km": 0.399, "Bs_km": 1.005e-5, "km": 2.99, "monitor": true, "comment": "OHL Segment"}
+],
+"transformers": [
+    {
+       "bus_j": "B00",
+       "bus_k": "B01",
+       "S_mva": 25.0,
+       "U_j_kV": 110.0,
+       "U_k_kV": 20.0,
+       "R_pu": 0.003,
+       "X_pu": 0.12,
+       "monitor": true
+    }
+],
+"pvs": [],
+"sources": [
+    {
+      "type": "genape",
+      "bus": "B00",
+      "S_n": 1000000000.0,
+      "F_n": 50.0,
+      "X_v": 0.001,
+      "R_v": 0.0,
+      "K_delta": 0.001,
+      "K_alpha": 1e-06
+    }
+],
+"plls": [
+     {"bus":"B01", "K_p_pll": 180, "K_i_pll": 3200, "K_theta_pll": 1000, "T_pll": 0.02}
+],
+"emec_config":{
+    "Dt": 10e-3,
+    "Dt_low": 20e-3,
+    "Dt_mid": 40e-3
+}
+}
