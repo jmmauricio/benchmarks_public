@@ -1,6 +1,6 @@
 {
 system: {name: "ieee39", S_base: 100e6},
-agc: {K_p_agc: 0.0, K_i_agc: 0.01, gen: "G01"}
+agc: {K_p_agc: 0.0, K_i_agc: 0.0001, gen: "G01"}
 buses: [
   {name: "01", P_W: 0, Q_var: 0, U_kV: 400.0},
   {name: "02", P_W: 0, Q_var: 0, U_kV: 400.0},
