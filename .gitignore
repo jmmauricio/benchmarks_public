@@ -4,5 +4,10 @@
 # Jupyter notebook checkpoints
 .ipynb_checkpoints/
 
-# Editor settings
-ieee39/.vscode/settings.json
+# Editor / tool state
+.vscode/
+.claude/settings.local.json
+
+# Python bytecode
+__pycache__/
+*.pyc
