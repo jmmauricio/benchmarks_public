@@ -1,5 +1,5 @@
 """
-IEEE 39-bus New England test system — CasADi pipeline.
+CIGRE European MV benchmark — CasADi pipeline.
 
     python main.py        # ini: load flow + report + validation + small-signal
 """
@@ -21,7 +21,7 @@ DATA = 'cigre_mv.hjson'   # network description (buses, lines, generators, loads
 
 
 def build():
-    # Assemble the symbolic DAE for the IEEE 39-bus system from the HJSON description.
+    # Assemble the symbolic DAE for the CIGRE MV network from the HJSON description.
     grid = BpsBuilder(DATA, use_casadi=True)
     grid.uz_jacs = False            # skip the u/z Jacobians: only the A matrix is needed here
     grid.construct('cigre_mv')        # concatenate every component's equations into grid.sys_dict
@@ -86,7 +86,7 @@ def run(t_clear=1.2, bus_fault='16'):
     axes[0].set_ylabel("Speed (pu)"); axes[0].legend(); axes[0].grid(True)
     axes[1].set_ylabel("Voltage (pu)"); axes[1].legend(); axes[1].grid(True)
     axes[1].set_xlabel("Time (s)")
-    fig.savefig('ieee39_run.png')
+    fig.savefig('cigre_mv_run.png')
 
     return model
 
