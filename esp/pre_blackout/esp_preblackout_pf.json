@@ -1,0 +1,767 @@
+{
+ "gens": {
+  "biomass_ES111": {
+   "P_MW": 50.0,
+   "Q_Mvar": 3.253,
+   "kind": "syn"
+  },
+  "biomass_ES120": {
+   "P_MW": 127.0,
+   "Q_Mvar": 10.216,
+   "kind": "syn"
+  },
+  "CCGT_ES213": {
+   "P_MW": 308.871,
+   "Q_Mvar": 201.55,
+   "kind": "syn"
+  },
+  "biomass_ES243": {
+   "P_MW": 50.0,
+   "Q_Mvar": 7.341,
+   "kind": "syn"
+  },
+  "biomass_ES413": {
+   "P_MW": 50.0,
+   "Q_Mvar": 4.121,
+   "kind": "syn"
+  },
+  "biomass_ES422": {
+   "P_MW": 50.0,
+   "Q_Mvar": 3.828,
+   "kind": "syn"
+  },
+  "nuclear_ES424": {
+   "P_MW": 1005.66,
+   "Q_Mvar": 101.6,
+   "kind": "syn"
+  },
+  "biomass_ES431": {
+   "P_MW": 20.0,
+   "Q_Mvar": 1.439,
+   "kind": "syn"
+  },
+  "biomass_ES432": {
+   "P_MW": 15.0,
+   "Q_Mvar": 1.076,
+   "kind": "syn"
+  },
+  "CCGT_ES512": {
+   "P_MW": 25.0,
+   "Q_Mvar": 9.05,
+   "kind": "syn"
+  },
+  "biomass_ES513": {
+   "P_MW": 25.0,
+   "Q_Mvar": 4.766,
+   "kind": "syn"
+  },
+  "nuclear_ES514": {
+   "P_MW": 1994.34,
+   "Q_Mvar": 350.582,
+   "kind": "syn"
+  },
+  "biomass_ES613": {
+   "P_MW": 52.1,
+   "Q_Mvar": 3.919,
+   "kind": "syn"
+  },
+  "biomass_ES615": {
+   "P_MW": 137.0,
+   "Q_Mvar": 10.293,
+   "kind": "syn"
+  },
+  "CCGT_ES620": {
+   "P_MW": 3467.7,
+   "Q_Mvar": 318.408,
+   "kind": "syn"
+  },
+  "ror_ES113": {
+   "P_MW": 26.807,
+   "Q_Mvar": 3.713,
+   "kind": "syn"
+  },
+  "ror_ES120": {
+   "P_MW": 7.684,
+   "Q_Mvar": 2.099,
+   "kind": "syn"
+  },
+  "ror_ES241": {
+   "P_MW": 4.332,
+   "Q_Mvar": 2.986,
+   "kind": "syn"
+  },
+  "ror_ES423": {
+   "P_MW": 1.878,
+   "Q_Mvar": 0.708,
+   "kind": "syn"
+  },
+  "ror_ES512": {
+   "P_MW": 1.352,
+   "Q_Mvar": 3.274,
+   "kind": "syn"
+  },
+  "ror_ES513": {
+   "P_MW": 10.841,
+   "Q_Mvar": 12.111,
+   "kind": "syn"
+  },
+  "ror_ES514": {
+   "P_MW": 5.083,
+   "Q_Mvar": 4.983,
+   "kind": "syn"
+  },
+  "hydro_ES111_hydro": {
+   "P_MW": 16.065,
+   "Q_Mvar": 2.752,
+   "kind": "syn"
+  },
+  "hydro_ES112_hydro": {
+   "P_MW": 47.995,
+   "Q_Mvar": 9.167,
+   "kind": "syn"
+  },
+  "hydro_ES113_hydro": {
+   "P_MW": 194.597,
+   "Q_Mvar": 29.701,
+   "kind": "syn"
+  },
+  "hydro_ES114_hydro": {
+   "P_MW": 8.086,
+   "Q_Mvar": 1.303,
+   "kind": "syn"
+  },
+  "hydro_ES120_hydro": {
+   "P_MW": 49.046,
+   "Q_Mvar": 14.825,
+   "kind": "syn"
+  },
+  "hydro_ES130_hydro": {
+   "P_MW": 13.905,
+   "Q_Mvar": 8.599,
+   "kind": "syn"
+  },
+  "hydro_ES213_hydro": {
+   "P_MW": 9.027,
+   "Q_Mvar": 8.632,
+   "kind": "syn"
+  },
+  "hydro_ES220_hydro": {
+   "P_MW": 21.065,
+   "Q_Mvar": 14.628,
+   "kind": "syn"
+  },
+  "hydro_ES241_hydro": {
+   "P_MW": 53.179,
+   "Q_Mvar": 40.716,
+   "kind": "syn"
+  },
+  "hydro_ES243_hydro": {
+   "P_MW": 34.257,
+   "Q_Mvar": 29.704,
+   "kind": "syn"
+  },
+  "hydro_ES300_hydro": {
+   "P_MW": 5.639,
+   "Q_Mvar": 2.074,
+   "kind": "syn"
+  },
+  "hydro_ES411_1_hydro": {
+   "P_MW": 6.596,
+   "Q_Mvar": 2.33,
+   "kind": "syn"
+  },
+  "hydro_ES412_hydro": {
+   "P_MW": 3.085,
+   "Q_Mvar": 2.049,
+   "kind": "syn"
+  },
+  "hydro_ES413_hydro": {
+   "P_MW": 29.257,
+   "Q_Mvar": 9.335,
+   "kind": "syn"
+  },
+  "hydro_ES415_hydro": {
+   "P_MW": 55.323,
+   "Q_Mvar": 13.803,
+   "kind": "syn"
+  },
+  "hydro_ES419_hydro": {
+   "P_MW": 79.401,
+   "Q_Mvar": 19.047,
+   "kind": "syn"
+  },
+  "hydro_ES421_hydro": {
+   "P_MW": 2.459,
+   "Q_Mvar": 1.035,
+   "kind": "syn"
+  },
+  "hydro_ES423_hydro": {
+   "P_MW": 7.436,
+   "Q_Mvar": 3.105,
+   "kind": "syn"
+  },
+  "hydro_ES424_hydro": {
+   "P_MW": 3.936,
+   "Q_Mvar": 1.866,
+   "kind": "syn"
+  },
+  "hydro_ES425_hydro": {
+   "P_MW": 27.768,
+   "Q_Mvar": 8.997,
+   "kind": "syn"
+  },
+  "hydro_ES431_hydro": {
+   "P_MW": 33.832,
+   "Q_Mvar": 7.788,
+   "kind": "syn"
+  },
+  "hydro_ES432_hydro": {
+   "P_MW": 160.542,
+   "Q_Mvar": 36.627,
+   "kind": "syn"
+  },
+  "hydro_ES511_hydro": {
+   "P_MW": 13.932,
+   "Q_Mvar": 20.592,
+   "kind": "syn"
+  },
+  "hydro_ES512_hydro": {
+   "P_MW": 10.522,
+   "Q_Mvar": 28.388,
+   "kind": "syn"
+  },
+  "hydro_ES513_hydro": {
+   "P_MW": 37.157,
+   "Q_Mvar": 46.085,
+   "kind": "syn"
+  },
+  "hydro_ES514_hydro": {
+   "P_MW": 28.087,
+   "Q_Mvar": 30.56,
+   "kind": "syn"
+  },
+  "hydro_ES523_hydro": {
+   "P_MW": 71.271,
+   "Q_Mvar": 31.951,
+   "kind": "syn"
+  },
+  "hydro_ES613_hydro": {
+   "P_MW": 1.596,
+   "Q_Mvar": 0.411,
+   "kind": "syn"
+  },
+  "hydro_ES614_hydro": {
+   "P_MW": 2.766,
+   "Q_Mvar": 0.87,
+   "kind": "syn"
+  },
+  "hydro_ES616_hydro": {
+   "P_MW": 5.851,
+   "Q_Mvar": 1.52,
+   "kind": "syn"
+  },
+  "hydro_ES617_hydro": {
+   "P_MW": 9.575,
+   "Q_Mvar": 2.529,
+   "kind": "syn"
+  },
+  "hydro_ES618_hydro": {
+   "P_MW": 4.387,
+   "Q_Mvar": 1.093,
+   "kind": "syn"
+  },
+  "SLACK_FR": {
+   "P_MW": -2025.365,
+   "Q_Mvar": 543.524,
+   "kind": "syn"
+  },
+  "solar_ES112": {
+   "P_MW": 1.579,
+   "Q_Mvar": -0.0,
+   "kind": "pv"
+  },
+  "solar_ES114": {
+   "P_MW": 4.757,
+   "Q_Mvar": -0.0,
+   "kind": "pv"
+  },
+  "solar_ES120": {
+   "P_MW": 6.222,
+   "Q_Mvar": 0.0,
+   "kind": "pv"
+  },
+  "solar_ES130": {
+   "P_MW": 12.035,
+   "Q_Mvar": 0.0,
+   "kind": "pv"
+  },
+  "solar_ES211": {
+   "P_MW": 40.348,
+   "Q_Mvar": 0.0,
+   "kind": "pv"
+  },
+  "solar_ES220": {
+   "P_MW": 128.189,
+   "Q_Mvar": 0.0,
+   "kind": "pv"
+  },
+  "solar_ES230": {
+   "P_MW": 175.065,
+   "Q_Mvar": 0.0,
+   "kind": "pv"
+  },
+  "solar_ES241": {
+   "P_MW": 68.131,
+   "Q_Mvar": -0.0,
+   "kind": "pv"
+  },
+  "solar_ES242": {
+   "P_MW": 252.769,
+   "Q_Mvar": 0.0,
+   "kind": "pv"
+  },
+  "solar_ES243": {
+   "P_MW": 843.604,
+   "Q_Mvar": -0.0,
+   "kind": "pv"
+  },
+  "solar_ES300": {
+   "P_MW": 185.484,
+   "Q_Mvar": 0.0,
+   "kind": "pv"
+  },
+  "solar_ES411_1": {
+   "P_MW": 379.27,
+   "Q_Mvar": 0.0,
+   "kind": "pv"
+  },
+  "solar_ES412": {
+   "P_MW": 177.929,
+   "Q_Mvar": -0.0,
+   "kind": "pv"
+  },
+  "solar_ES413": {
+   "P_MW": 109.02,
+   "Q_Mvar": 0.0,
+   "kind": "pv"
+  },
+  "solar_ES414": {
+   "P_MW": 246.015,
+   "Q_Mvar": -0.0,
+   "kind": "pv"
+  },
+  "solar_ES415": {
+   "P_MW": 264.002,
+   "Q_Mvar": 0.0,
+   "kind": "pv"
+  },
+  "solar_ES416": {
+   "P_MW": 137.242,
+   "Q_Mvar": 0.0,
+   "kind": "pv"
+  },
+  "solar_ES417": {
+   "P_MW": 27.528,
+   "Q_Mvar": -0.0,
+   "kind": "pv"
+  },
+  "solar_ES419": {
+   "P_MW": 161.999,
+   "Q_Mvar": -0.0,
+   "kind": "pv"
+  },
+  "solar_ES421": {
+   "P_MW": 498.975,
+   "Q_Mvar": -0.0,
+   "kind": "pv"
+  },
+  "solar_ES422": {
+   "P_MW": 860.383,
+   "Q_Mvar": 0.0,
+   "kind": "pv"
+  },
+  "solar_ES423": {
+   "P_MW": 698.72,
+   "Q_Mvar": 0.0,
+   "kind": "pv"
+  },
+  "solar_ES424": {
+   "P_MW": 696.673,
+   "Q_Mvar": 0.0,
+   "kind": "pv"
+  },
+  "solar_ES425": {
+   "P_MW": 380.558,
+   "Q_Mvar": 0.0,
+   "kind": "pv"
+  },
+  "solar_ES431": {
+   "P_MW": 2212.98,
+   "Q_Mvar": -0.0,
+   "kind": "pv"
+  },
+  "solar_ES432": {
+   "P_MW": 1786.329,
+   "Q_Mvar": 0.0,
+   "kind": "pv"
+  },
+  "solar_ES511": {
+   "P_MW": 45.669,
+   "Q_Mvar": -0.0,
+   "kind": "pv"
+  },
+  "solar_ES512": {
+   "P_MW": 7.8,
+   "Q_Mvar": -0.0,
+   "kind": "pv"
+  },
+  "solar_ES513": {
+   "P_MW": 98.926,
+   "Q_Mvar": -0.0,
+   "kind": "pv"
+  },
+  "solar_ES514": {
+   "P_MW": 28.361,
+   "Q_Mvar": 0.0,
+   "kind": "pv"
+  },
+  "solar_ES521": {
+   "P_MW": 72.526,
+   "Q_Mvar": -0.0,
+   "kind": "pv"
+  },
+  "solar_ES522": {
+   "P_MW": 51.479,
+   "Q_Mvar": -0.0,
+   "kind": "pv"
+  },
+  "solar_ES523": {
+   "P_MW": 130.962,
+   "Q_Mvar": -0.0,
+   "kind": "pv"
+  },
+  "solar_ES611": {
+   "P_MW": 340.039,
+   "Q_Mvar": -0.0,
+   "kind": "pv"
+  },
+  "solar_ES612": {
+   "P_MW": 557.184,
+   "Q_Mvar": -0.0,
+   "kind": "pv"
+  },
+  "solar_ES613": {
+   "P_MW": 362.295,
+   "Q_Mvar": -0.0,
+   "kind": "pv"
+  },
+  "solar_ES614": {
+   "P_MW": 441.52,
+   "Q_Mvar": 0.0,
+   "kind": "pv"
+  },
+  "solar_ES615": {
+   "P_MW": 333.701,
+   "Q_Mvar": -0.0,
+   "kind": "pv"
+  },
+  "solar_ES616": {
+   "P_MW": 229.513,
+   "Q_Mvar": 0.0,
+   "kind": "pv"
+  },
+  "solar_ES617": {
+   "P_MW": 200.525,
+   "Q_Mvar": 0.0,
+   "kind": "pv"
+  },
+  "solar_ES618": {
+   "P_MW": 1639.141,
+   "Q_Mvar": 0.0,
+   "kind": "pv"
+  },
+  "solar_ES620": {
+   "P_MW": 1002.611,
+   "Q_Mvar": -0.0,
+   "kind": "pv"
+  },
+  "onwind_ES111": {
+   "P_MW": 501.976,
+   "Q_Mvar": 0.0,
+   "kind": "wind"
+  },
+  "onwind_ES112": {
+   "P_MW": 408.836,
+   "Q_Mvar": -0.0,
+   "kind": "wind"
+  },
+  "onwind_ES113": {
+   "P_MW": 27.741,
+   "Q_Mvar": -0.0,
+   "kind": "wind"
+  },
+  "onwind_ES114": {
+   "P_MW": 119.525,
+   "Q_Mvar": -0.0,
+   "kind": "wind"
+  },
+  "onwind_ES120": {
+   "P_MW": 116.13,
+   "Q_Mvar": 0.0,
+   "kind": "wind"
+  },
+  "onwind_ES130": {
+   "P_MW": 1.209,
+   "Q_Mvar": 0.0,
+   "kind": "wind"
+  },
+  "onwind_ES220": {
+   "P_MW": 6.473,
+   "Q_Mvar": 0.0,
+   "kind": "wind"
+  },
+  "onwind_ES230": {
+   "P_MW": 33.201,
+   "Q_Mvar": -0.0,
+   "kind": "wind"
+  },
+  "onwind_ES241": {
+   "P_MW": 130.144,
+   "Q_Mvar": 0.0,
+   "kind": "wind"
+  },
+  "onwind_ES242": {
+   "P_MW": 90.806,
+   "Q_Mvar": 0.0,
+   "kind": "wind"
+  },
+  "onwind_ES243": {
+   "P_MW": 429.66,
+   "Q_Mvar": 0.0,
+   "kind": "wind"
+  },
+  "onwind_ES411_1": {
+   "P_MW": 84.538,
+   "Q_Mvar": -0.0,
+   "kind": "wind"
+  },
+  "onwind_ES412": {
+   "P_MW": 348.315,
+   "Q_Mvar": 0.0,
+   "kind": "wind"
+  },
+  "onwind_ES413": {
+   "P_MW": 44.848,
+   "Q_Mvar": -0.0,
+   "kind": "wind"
+  },
+  "onwind_ES414": {
+   "P_MW": 160.078,
+   "Q_Mvar": 0.0,
+   "kind": "wind"
+  },
+  "onwind_ES415": {
+   "P_MW": 12.69,
+   "Q_Mvar": -0.0,
+   "kind": "wind"
+  },
+  "onwind_ES416": {
+   "P_MW": 3.337,
+   "Q_Mvar": 0.0,
+   "kind": "wind"
+  },
+  "onwind_ES417": {
+   "P_MW": 323.156,
+   "Q_Mvar": 0.0,
+   "kind": "wind"
+  },
+  "onwind_ES419": {
+   "P_MW": 66.826,
+   "Q_Mvar": -0.0,
+   "kind": "wind"
+  },
+  "onwind_ES421": {
+   "P_MW": 9.466,
+   "Q_Mvar": -0.0,
+   "kind": "wind"
+  },
+  "onwind_ES422": {
+   "P_MW": 1.176,
+   "Q_Mvar": 0.0,
+   "kind": "wind"
+  },
+  "onwind_ES423": {
+   "P_MW": 68.199,
+   "Q_Mvar": -0.0,
+   "kind": "wind"
+  },
+  "onwind_ES424": {
+   "P_MW": 51.069,
+   "Q_Mvar": -0.0,
+   "kind": "wind"
+  },
+  "onwind_ES511": {
+   "P_MW": 41.168,
+   "Q_Mvar": -0.0,
+   "kind": "wind"
+  },
+  "onwind_ES513": {
+   "P_MW": 104.472,
+   "Q_Mvar": -0.0,
+   "kind": "wind"
+  },
+  "onwind_ES514": {
+   "P_MW": 95.081,
+   "Q_Mvar": 0.0,
+   "kind": "wind"
+  },
+  "onwind_ES521": {
+   "P_MW": 4.697,
+   "Q_Mvar": 0.0,
+   "kind": "wind"
+  },
+  "onwind_ES522": {
+   "P_MW": 42.128,
+   "Q_Mvar": -0.0,
+   "kind": "wind"
+  },
+  "onwind_ES523": {
+   "P_MW": 22.507,
+   "Q_Mvar": -0.0,
+   "kind": "wind"
+  },
+  "onwind_ES611": {
+   "P_MW": 23.209,
+   "Q_Mvar": 0.0,
+   "kind": "wind"
+  },
+  "onwind_ES612": {
+   "P_MW": 5.703,
+   "Q_Mvar": 0.0,
+   "kind": "wind"
+  },
+  "onwind_ES614": {
+   "P_MW": 1.728,
+   "Q_Mvar": 0.0,
+   "kind": "wind"
+  },
+  "onwind_ES615": {
+   "P_MW": 1.404,
+   "Q_Mvar": 0.0,
+   "kind": "wind"
+  },
+  "onwind_ES617": {
+   "P_MW": 2.508,
+   "Q_Mvar": 0.0,
+   "kind": "wind"
+  },
+  "onwind_ES620": {
+   "P_MW": 14.007,
+   "Q_Mvar": -0.0,
+   "kind": "wind"
+  }
+ },
+ "buses": {
+  "ES111": 0.9982,
+  "ES112": 0.998,
+  "ES113": 0.9984,
+  "ES114": 0.9983,
+  "ES120": 0.9968,
+  "ES130": 0.9935,
+  "ES211": 0.9914,
+  "ES212": 0.9906,
+  "ES213": 0.9899,
+  "ES220": 0.9927,
+  "ES230": 0.9925,
+  "ES241": 0.9919,
+  "ES242": 0.9901,
+  "ES243": 0.9908,
+  "ES300": 0.9961,
+  "ES411_1": 0.9963,
+  "ES412": 0.993,
+  "ES413": 0.9967,
+  "ES414": 0.9946,
+  "ES415": 0.9974,
+  "ES416": 0.9962,
+  "ES417": 0.9923,
+  "ES419": 0.9975,
+  "ES421": 0.9956,
+  "ES422": 0.9972,
+  "ES423": 0.9956,
+  "ES424": 0.995,
+  "ES425": 0.9966,
+  "ES431": 0.9976,
+  "ES432": 0.9976,
+  "ES511": 0.9843,
+  "ES512": 0.9714,
+  "ES513": 0.9869,
+  "ES514": 0.9885,
+  "ES521": 0.9957,
+  "ES522": 0.9896,
+  "ES523": 0.9953,
+  "ES611": 0.9961,
+  "ES612": 0.9974,
+  "ES613": 0.9973,
+  "ES614": 0.9967,
+  "ES615": 0.9973,
+  "ES616": 0.9973,
+  "ES617": 0.9972,
+  "ES618": 0.9974,
+  "ES620": 0.9958,
+  "FR": 1.0,
+  "GT_biomass_ES111": 1.0,
+  "GT_biomass_ES120": 1.0,
+  "GT_CCGT_ES213": 1.0,
+  "GT_biomass_ES243": 1.0,
+  "GT_biomass_ES413": 1.0,
+  "GT_biomass_ES422": 1.0,
+  "GT_nuclear_ES424": 1.0,
+  "GT_biomass_ES431": 1.0,
+  "GT_biomass_ES432": 1.0,
+  "GT_CCGT_ES512": 1.0,
+  "GT_biomass_ES513": 1.0,
+  "GT_nuclear_ES514": 1.0,
+  "GT_biomass_ES613": 1.0,
+  "GT_biomass_ES615": 1.0,
+  "GT_CCGT_ES620": 1.0,
+  "GT_ror_ES113": 1.0,
+  "GT_ror_ES120": 1.0,
+  "GT_ror_ES241": 1.0,
+  "GT_ror_ES423": 1.0,
+  "GT_ror_ES512": 1.0,
+  "GT_ror_ES513": 1.0,
+  "GT_ror_ES514": 1.0,
+  "GT_hydro_ES111_hydro": 1.0,
+  "GT_hydro_ES112_hydro": 1.0,
+  "GT_hydro_ES113_hydro": 1.0,
+  "GT_hydro_ES114_hydro": 1.0,
+  "GT_hydro_ES120_hydro": 1.0,
+  "GT_hydro_ES130_hydro": 1.0,
+  "GT_hydro_ES213_hydro": 1.0,
+  "GT_hydro_ES220_hydro": 1.0,
+  "GT_hydro_ES241_hydro": 1.0,
+  "GT_hydro_ES243_hydro": 1.0,
+  "GT_hydro_ES300_hydro": 1.0,
+  "GT_hydro_ES411_1_hydro": 1.0,
+  "GT_hydro_ES412_hydro": 1.0,
+  "GT_hydro_ES413_hydro": 1.0,
+  "GT_hydro_ES415_hydro": 1.0,
+  "GT_hydro_ES419_hydro": 1.0,
+  "GT_hydro_ES421_hydro": 1.0,
+  "GT_hydro_ES423_hydro": 1.0,
+  "GT_hydro_ES424_hydro": 1.0,
+  "GT_hydro_ES425_hydro": 1.0,
+  "GT_hydro_ES431_hydro": 1.0,
+  "GT_hydro_ES432_hydro": 1.0,
+  "GT_hydro_ES511_hydro": 1.0,
+  "GT_hydro_ES512_hydro": 1.0,
+  "GT_hydro_ES513_hydro": 1.0,
+  "GT_hydro_ES514_hydro": 1.0,
+  "GT_hydro_ES523_hydro": 1.0,
+  "GT_hydro_ES613_hydro": 1.0,
+  "GT_hydro_ES614_hydro": 1.0,
+  "GT_hydro_ES616_hydro": 1.0,
+  "GT_hydro_ES617_hydro": 1.0,
+  "GT_hydro_ES618_hydro": 1.0
+ }
+}
