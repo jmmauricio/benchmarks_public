@@ -1,0 +1,10 @@
+# Ignore everything …
+*
+# … except the source files for this case.
+!.gitignore
+!*.hjson
+!*.json
+!main.py
+!*.ipynb
+!README.md
+!*.md
