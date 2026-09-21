@@ -1,0 +1,400 @@
+{
+    "system": {
+      "S_base": 1000000,
+      "K_p_agc": 0.01,
+      "K_i_agc": 0.01,
+      "K_xif": 0.01
+    },
+    "buses": [
+      {
+        "name": "A0",
+        "pos_x": 0,
+        "pos_y": 0,
+        "units": "m",
+        "U_kV": 20,
+        "N_nodes": 3,
+        "phi_deg_0": 30
+      },
+      {
+        "name": "A1",
+        "pos_x": 30,
+        "pos_y": 0,
+        "units": "m",
+        "U_kV": 0.4
+      },
+      {
+        "name": "A2",
+        "pos_x": 30,
+        "pos_y": 0,
+        "units": "m",
+        "U_kV": 0.4
+      },
+      {
+        "name": "A3",
+        "pos_x": 90,
+        "pos_y": 0,
+        "units": "m",
+        "U_kV": 0.4
+      },
+      {
+        "name": "A4",
+        "pos_x": 150,
+        "pos_y": 0,
+        "units": "m",
+        "U_kV": 0.4
+      },
+      {
+        "name": "D2",
+        "pos_x": 30,
+        "pos_y": -20,
+        "units": "m",
+        "U_kV": 0.8,
+        "acdc": "DC",
+        "nodes": [
+          0,
+          1
+        ]
+      },
+      {
+        "name": "D3",
+        "pos_x": 30,
+        "pos_y": -20,
+        "units": "m",
+        "U_kV": 0.8,
+        "acdc": "DC",
+        "nodes": [
+          0,
+          1
+        ]
+      },
+      {
+        "name": "D4",
+        "pos_x": 150,
+        "pos_y": -20,
+        "units": "m",
+        "U_kV": 0.8,
+        "acdc": "DC",
+        "nodes": [
+          0,
+          1
+        ]
+      }
+    ],
+    "transformers": [
+      {
+        "bus_j": "A0",
+        "bus_k": "A1",
+        "S_n_kVA": 1000,
+        "U_j_kV": 20,
+        "U_k_kV": 0.4,
+        "R_cc_pu": 0.01,
+        "X_cc_pu": 0.04,
+        "connection": "Dyn11",
+        "conductors_j": 3,
+        "conductors_k": 4,
+        "monitor": true
+      }
+    ],
+    "lines": [
+      {
+        "bus_j": "A2",
+        "bus_k": "A3",
+        "code": "UG1",
+        "m": 100,
+        "monitor": true,
+        "sym": true
+      },
+      {
+        "bus_j": "A3",
+        "bus_k": "A4",
+        "code": "UG1",
+        "m": 100,
+        "monitor": true,
+        "sym": true
+      },
+      {
+        "bus_j": "D2",
+        "bus_k": "D3",
+        "code": "UG1dc",
+        "m": 100,
+        "vsc_line": true,
+        "monitor": true,
+        "bus_j_nodes": [
+          0,
+          1
+        ],
+        "bus_k_nodes": [
+          0,
+          1
+        ]
+      },
+      {
+        "bus_j": "D3",
+        "bus_k": "D4",
+        "code": "UG1dc",
+        "m": 100,
+        "vsc_line": true,
+        "monitor": true,
+        "bus_j_nodes": [
+          0,
+          1
+        ],
+        "bus_k_nodes": [
+          0,
+          1
+        ]
+      }
+    ],
+    "loads": [
+      {
+        "bus": "A2",
+        "kVA": 0,
+        "pf": 0.85,
+        "type": "3P+N",
+        "model": "ZIP"
+      },
+      {
+        "bus": "A3",
+        "kVA": 0,
+        "pf": 0.85,
+        "type": "3P+N",
+        "model": "ZIP"
+      },
+      {
+        "bus": "A4",
+        "kVA": 0,
+        "pf": 0.85,
+        "type": "3P+N",
+        "model": "ZIP"
+      },
+      {
+        "bus": "D2",
+        "kW": 1,
+        "type": "DC",
+        "model": "ZIP"
+      },
+      {
+        "bus": "D3",
+        "kW": 1,
+        "type": "DC",
+        "model": "ZIP"
+      },
+      {
+        "bus": "D4",
+        "kW": 1,
+        "type": "DC",
+        "model": "ZIP"
+      }
+    ],
+    "shunts": [
+      {
+        "bus": "A2",
+        "R": 3,
+        "X": 0,
+        "bus_nodes": [
+          3,
+          0
+        ]
+      },
+      {
+        "bus": "A1",
+        "R": 3,
+        "X": 0,
+        "bus_nodes": [
+          3,
+          0
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "type": "ac3ph3w_ideal",
+        "bus": "A0",
+        "S_n": 100000,
+        "U_n": 20000,
+        "R": 0.01,
+        "X": 0.1,
+        "R_n": 0.01,
+        "X_n": 0.1,
+        "R_ng": 3,
+        "X_ng": 0,
+        "K_p": 0.1,
+        "K_agc": 1,
+        "T_p": 0.1,
+        "T_e": 0.1,
+        "K_delta": 0,
+        "T_c": 0.1,
+        "Droop": 0.05,
+        "T_v": 0.1,
+        "K_f": 0.01,
+        "T_f": 0.01
+      }
+    ],
+    "vscs": [
+      {
+        "bus_ac": "A2",
+        "bus_dc": "D2",
+        "type": "acdc_3ph_4w_vdc_q",
+        "A": 0,
+        "B": 0,
+        "C": 0
+      },
+      {
+        "bus_ac": "A4",
+        "bus_dc": "D4",
+        "type": "acdc_3ph_4w_pq",
+        "A": 350,
+        "B": 0,
+        "C": 0.03,
+        "vsc_ctrl": {
+          "type": "ctrl_3ph_4w_droop"
+        }
+      },
+      {
+        "type": "ac_3ph_4w",
+        "bus": "A3",
+        "S_n": 100000,
+        "U_n": 400,
+        "R": 0.01,
+        "X": 0.05,
+        "R_n": 0.01,
+        "X_n": 0.1,
+        "R_ng": 0.01,
+        "X_ng": 3,
+        "vsg": {
+          "type": "gflpfzv",
+          "bus": "A3",
+          "S_n": 100000,
+          "U_n": 400,
+          "R_v": 0,
+          "X_v": 0.1,
+          "H": 5,
+          "D": 0.1,
+          "T_e": 0.1,
+          "K_sec": 0,
+          "K_delta": 0,
+          "T_c": 0.1,
+          "Droop": 0.05,
+          "T_v": 0.1,
+          "K_agc": 0,
+          "T_pfr": 0.2,
+          "K_qp": 0.01,
+          "K_qi": 0.01
+        }
+      }
+    ],
+    "ess": [
+      {
+        "bus": "D3",
+        "type": "bess_dcdc_gf",
+        "E_kWh": 1000,
+        "soc_0": 0.1,
+        "A": 0,
+        "B": 0,
+        "C": 0,
+        "v_ref": 800,
+        "socs": [
+          0,
+          0.1,
+          0.2,
+          0.8,
+          0.9,
+          1
+        ],
+        "es": [
+          600,
+          650,
+          680,
+          700,
+          710,
+          750
+        ]
+      }
+    ],
+    "breakers": [
+      {
+        "bus_1": "A1",
+        "bus_2": "A2"
+      }
+    ],
+    "line_codes": {
+      "UG1": {
+        "R": [
+          [
+            0.211,
+            0.049,
+            0.049,
+            0.049
+          ],
+          [
+            0.049,
+            0.211,
+            0.049,
+            0.049
+          ],
+          [
+            0.049,
+            0.049,
+            0.211,
+            0.049
+          ],
+          [
+            0.049,
+            0.049,
+            0.049,
+            0.211
+          ]
+        ],
+        "X": [
+          [
+            0.747,
+            0.673,
+            0.651,
+            0.673
+          ],
+          [
+            0.673,
+            0.747,
+            0.673,
+            0.651
+          ],
+          [
+            0.651,
+            0.673,
+            0.747,
+            0.673
+          ],
+          [
+            0.673,
+            0.651,
+            0.673,
+            0.747
+          ]
+        ],
+        "I_max": 430
+      },
+      "UG1dc": {
+        "R": [
+          [
+            0.211,
+            0
+          ],
+          [
+            0,
+            0.211
+          ]
+        ],
+        "X": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "I_max": 430
+      }
+    }
+  }

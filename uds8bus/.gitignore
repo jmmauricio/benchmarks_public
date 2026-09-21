@@ -1,0 +1,4 @@
+# Results: run.py writes the tooltip overlay from the hand-drawn base SVG,
+# and pydae emits the C solver headers.
+*_tooltips*.svg
+*.h
